@@ -12,7 +12,7 @@
     </script>
 </head>
 
-<body class="app-body">
+<body class="app-body {{ \App\Support\Acces::estMagazin() ? 'role-magazin' : '' }} {{ \App\Support\Acces::estCaisse() ? 'role-caisse' : '' }}">
     @include('partials.sidebar')
 
     <div class="app-main">

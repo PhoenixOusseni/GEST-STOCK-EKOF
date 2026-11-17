@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Depense extends Model
 {
     protected $fillable = [
+        'depot_id',
         'date_depense',
         'libelle',
         'categorie',
@@ -20,6 +21,11 @@ class Depense extends Model
         'date_depense' => 'date',
         'montant' => 'decimal:2',
     ];
+
+    public function depot()
+    {
+        return $this->belongsTo(Depot::class);
+    }
 
     public const CATEGORIES = [
         'Loyer',

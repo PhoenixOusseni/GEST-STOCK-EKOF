@@ -17,6 +17,7 @@
                 <a href="{{ route('gestions_depenses.index') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-arrow-left"></i> &nbsp; Retour
                 </a>
+                @if (\App\Support\Acces::peutModifier('depense'))
                 <form action="{{ route('gestions_depenses.destroy', $depense->id) }}" method="POST"
                     onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette dépense ?');">
                     @csrf
@@ -25,6 +26,7 @@
                         <i class="bi bi-trash"></i> &nbsp; Supprimer
                     </button>
                 </form>
+                @endif
             </div>
         </div>
     </div>

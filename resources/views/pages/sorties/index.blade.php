@@ -15,9 +15,11 @@
                 <a href="{{ route('sorties.printJournal') }}" target="_blank" class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-printer"></i>&nbsp; Imprimer
                 </a>
+                @if (\App\Support\Acces::peutCreer())
                 <a href="{{ route('gestions_sorties.create') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-circle"></i>&nbsp; Nouvelle Sortie
                 </a>
+                @endif
             </div>
         </div>
     </div><!-- End Page Title -->
@@ -88,9 +90,11 @@
                                                         <a href="{{ route('gestions_sorties.show', $sortie) }}" class="btn btn-sm btn-success" title="Voir">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
+                                                        @if (\App\Support\Acces::peutModifier('sortie'))
                                                         <a href="{{ route('gestions_sorties.edit', $sortie) }}" class="btn btn-sm btn-warning" title="Modifier">
                                                             <i class="bi bi-pencil-square"></i>
                                                         </a>
+                                                        @endif
                                                     </div>
                                                 </td>
                                             </tr>

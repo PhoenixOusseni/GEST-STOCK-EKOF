@@ -56,6 +56,10 @@
             ],
         ],
     ];
+
+    if (! \App\Support\Acces::estAdmin()) {
+        $groups = array_values(array_filter($groups, fn ($group) => $group['label'] !== 'Paramètres'));
+    }
 @endphp
 
 <aside id="appSidebar" class="app-sidebar" aria-label="Navigation principale">
@@ -71,6 +75,7 @@
 
     <nav class="sidebar-scroll">
         <p class="nav-section">Pilotage</p>
+        @unless (\App\Support\Acces::estMagazin())
         <a href="{{ route('depots.accueil') }}"
            class="nav-link {{ $navActive('depots.accueil') ? 'is-active' : '' }}"
            data-section="Pilotage"
@@ -78,6 +83,7 @@
             <i class="bi bi-building"></i>
             <span class="nav-label">Magazins</span>
         </a>
+        @endunless
         <a href="{{ route('dashboard') }}"
            class="nav-link {{ $navActive('dashboard') ? 'is-active' : '' }}"
            data-section="Pilotage"

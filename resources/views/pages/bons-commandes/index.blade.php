@@ -12,9 +12,11 @@
                     </ol>
                 </nav>
             </div>
+            @if (\App\Support\Acces::peutCreer())
             <a href="{{ route('gestions_bons_commandes.create') }}" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle"></i>&nbsp; Nouveau bon
             </a>
+            @endif
         </div>
     </div>
 
@@ -119,7 +121,7 @@
                                                     <a href="{{ route('gestions_bons_commandes.show', $bon->id) }}" class="btn btn-sm btn-success" title="Voir">
                                                         <i class="bi bi-eye"></i>
                                                     </a>
-                                                    @if ($bon->statut === 'en_cours')
+                                                    @if ($bon->statut === 'en_cours' && \App\Support\Acces::peutModifier('bon'))
                                                         <a href="{{ route('gestions_bons_commandes.edit', $bon->id) }}" class="btn btn-sm btn-warning" title="Modifier">
                                                             <i class="bi bi-pencil-square"></i>
                                                         </a>

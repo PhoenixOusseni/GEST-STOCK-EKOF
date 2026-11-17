@@ -4,512 +4,435 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <title>SAFRECO - GSM | Connexion</title>
-    <meta content="Système de gestion de stocks et de trésorerie - SAFRECO GSM" name="description">
-
-    <!-- Favicon -->
+    <title>MARKET PLACE | Connexion</title>
+    <meta content="Système de gestion de stocks et de trésorerie" name="description">
     <link href="{{ asset('images/logo_gcm.jpeg') }}" rel="icon">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
-
-    <!-- Bootstrap CSS (local) -->
-    <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-
-    <!-- Bootstrap Icons (local) -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
     <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
-
     <style>
-        *,
-        *::before,
-        *::after {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --navy: #0c3d78;
+            --navy-deep: #08284f;
+            --red: #b42318;
+            --ink: #172033;
+            --muted: #5d6b80;
+            --line: #e3e9f2;
         }
 
-        :root {
-            --green-600: #1976d2;
-            --green-700: #1565c0;
-            --slate-900: #0a0a0a;
-            --slate-600: #3d3d3d;
-            --slate-500: #6b6b6b;
-            --slate-200: #e4e7e4;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: 'Inter', sans-serif;
             min-height: 100vh;
-            background: #ffffff;
+            font-family: "Source Sans 3", "Segoe UI", sans-serif;
+            color: var(--ink);
+            background: #eef2f7;
+        }
+
+        .auth {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: minmax(280px, 42%) 1fr;
+        }
+
+        .auth-aside {
+            background: var(--navy-deep);
+            color: #fff;
+            padding: 48px 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .auth-aside::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 4px;
+            background: var(--red);
+        }
+
+        .auth-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .auth-brand img {
+            width: 46px;
+            height: 46px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .auth-brand strong {
+            display: block;
+            font-family: "Source Serif 4", Georgia, serif;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .auth-brand span {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+        .auth-aside h1 {
+            margin-top: 64px;
+            font-family: "Source Serif 4", Georgia, serif;
+            font-size: 2.4rem;
+            font-weight: 600;
+            line-height: 1.15;
+            letter-spacing: -0.03em;
+            max-width: 11ch;
+        }
+
+        .auth-aside p {
+            margin-top: 16px;
+            max-width: 34ch;
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 1.02rem;
+            line-height: 1.5;
+        }
+
+        .auth-points {
+            list-style: none;
+            margin-top: 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .auth-points li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.88);
+        }
+
+        .auth-points i {
+            width: 28px;
+            height: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            display: grid;
+            place-items: center;
+            font-size: 0.85rem;
+        }
+
+        .auth-aside small {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.78rem;
+        }
+
+        .auth-panel {
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem 1rem;
-            position: relative;
-            overflow: hidden;
+            padding: 40px 24px;
         }
 
-        /* ── Watermark ── */
-        .watermark {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            width: 900px;
-            max-width: 130vw;
-            transform: translate(-50%, -50%) rotate(-8deg);
-            opacity: 0.055;
-            filter: grayscale(35%);
-            pointer-events: none;
-            user-select: none;
-            z-index: 0;
-        }
-
-        .login-wrap {
+        .auth-card {
             width: 100%;
-            max-width: 408px;
-            animation: fadeSlideUp 0.5s ease both;
-            position: relative;
-            z-index: 1;
+            max-width: 420px;
         }
 
-        /* ── Card ── */
-        .login-card {
-            background: #fff;
-            border-radius: 18px;
-            box-shadow: 0 1px 3px rgba(15, 23, 42, .06), 0 20px 48px rgba(15, 23, 42, .10);
-            padding: 2.5rem 2.25rem;
-        }
-
-        /* ── Brand ── */
-        .brand {
-            text-align: center;
-            margin-bottom: 1.75rem;
-        }
-
-        .brand-logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 14px;
-            object-fit: cover;
-            display: block;
-            margin: 0 auto 1rem;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, .12);
-        }
-
-        .brand-name {
-            font-size: 1.05rem;
-            font-weight: 800;
-            color: var(--slate-900);
-            letter-spacing: -0.2px;
-        }
-
-        .brand-name span {
-            color: var(--green-600);
-        }
-
-        /* ── Header ── */
-        .form-title {
-            font-size: 1.5rem;
+        .auth-kicker {
+            font-size: 0.72rem;
             font-weight: 700;
-            color: var(--slate-900);
-            letter-spacing: -0.4px;
-            margin-bottom: 0.3rem;
-            text-align: center;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--red);
         }
 
-        .form-subtitle {
-            font-size: 0.85rem;
-            color: var(--slate-500);
-            text-align: center;
-            margin-bottom: 1.75rem;
-        }
-
-        /* ── Field group ── */
-        .field-group {
-            margin-bottom: 1.1rem;
-        }
-
-        .field-label {
-            font-size: 0.78rem;
+        .auth-card h2 {
+            margin-top: 6px;
+            font-family: "Source Serif 4", Georgia, serif;
+            font-size: 2rem;
             font-weight: 600;
-            color: #334155;
-            margin-bottom: 0.4rem;
+            letter-spacing: -0.03em;
+        }
+
+        .auth-card .lead {
+            margin: 8px 0 28px;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .alert-box {
+            display: flex;
+            gap: 8px;
+            align-items: flex-start;
+            padding: 12px 14px;
+            margin-bottom: 16px;
+            font-size: 0.86rem;
+            border: 1px solid #fecdd3;
+            background: #fff5f5;
+            color: #9f1239;
+        }
+
+        .alert-box.is-success {
+            border-color: #c5d4ea;
+            background: #f4f7fb;
+            color: var(--navy);
+        }
+
+        .alert-box ul { margin: 4px 0 0 16px; }
+
+        .alert-box button {
+            margin-left: auto;
+            border: 0;
+            background: none;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        .field { margin-bottom: 16px; }
+
+        .field label {
             display: block;
+            margin-bottom: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--muted);
         }
 
-        .field-wrap {
-            position: relative;
-        }
+        .field-wrap { position: relative; }
 
-        .field-wrap .f-icon {
+        .field-wrap i.f-icon {
             position: absolute;
-            left: 13px;
+            left: 12px;
             top: 50%;
             transform: translateY(-50%);
-            color: #94a3b8;
-            font-size: 0.95rem;
-            pointer-events: none;
-            transition: color 0.15s;
-            z-index: 1;
+            color: #8b98ab;
         }
 
         .field-wrap input {
             width: 100%;
-            padding: 0.72rem 1rem 0.72rem 2.6rem;
-            border: 1.5px solid var(--slate-200);
-            border-radius: 9px;
-            font-size: 0.9rem;
-            font-family: 'Inter', sans-serif;
-            color: var(--slate-900);
+            height: 46px;
+            padding: 0 42px 0 38px;
+            border: 1px solid #d5deea;
+            border-radius: 5px;
             background: #fff;
-            transition: border-color 0.15s, box-shadow 0.15s;
+            font: inherit;
+            font-size: 0.95rem;
+            color: var(--ink);
             outline: none;
         }
 
-        .field-wrap input::placeholder {
-            color: #c8d3e0;
-        }
-
         .field-wrap input:focus {
-            border-color: var(--green-600);
-            box-shadow: 0 0 0 3.5px rgba(56, 142, 60, 0.12);
+            border-color: var(--navy);
+            box-shadow: 0 0 0 3px rgba(12, 61, 120, 0.12);
         }
 
-        .field-wrap input:focus~.f-icon {
-            color: var(--green-600);
-        }
-
-        .field-wrap input.is-invalid {
-            border-color: #ef4444;
-        }
+        .field-wrap input.is-invalid { border-color: var(--red); }
 
         .field-error {
-            font-size: 0.75rem;
-            color: #ef4444;
-            margin-top: 0.35rem;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
+            display: block;
+            margin-top: 6px;
+            color: var(--red);
+            font-size: 0.78rem;
         }
 
         .btn-toggle-pw {
             position: absolute;
-            right: 10px;
+            right: 8px;
             top: 50%;
             transform: translateY(-50%);
+            border: 0;
             background: none;
-            border: none;
-            color: #94a3b8;
+            color: #8b98ab;
             cursor: pointer;
             padding: 4px 6px;
-            border-radius: 6px;
-            font-size: 0.95rem;
-            transition: color 0.15s, background 0.15s;
-            z-index: 2;
         }
 
-        .btn-toggle-pw:hover {
-            color: var(--green-600);
-            background: rgba(56, 142, 60, 0.07);
-        }
-
-        /* ── Remember row ── */
-        .remember-row {
+        .remember {
             display: flex;
             align-items: center;
-            margin-bottom: 1.4rem;
+            gap: 8px;
+            margin: 4px 0 22px;
+            font-size: 0.88rem;
+            color: var(--muted);
         }
 
-        .check-label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            cursor: pointer;
-        }
+        .remember input { accent-color: var(--navy); }
 
-        .check-label input[type="checkbox"] {
-            width: 15px;
-            height: 15px;
-            accent-color: var(--green-600);
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .check-label span {
-            font-size: 0.82rem;
-            color: var(--slate-600);
-            font-weight: 500;
-        }
-
-        /* ── Alerts ── */
-        .alert-box {
-            border-radius: 9px;
-            padding: 0.75rem 0.9rem;
-            font-size: 0.8rem;
-            margin-bottom: 1.1rem;
-            display: flex;
-            align-items: flex-start;
-            gap: 0.6rem;
-        }
-
-        .alert-box.is-error {
-            background: #fff1f2;
-            color: #9f1239;
-            border: 1px solid #fecdd3;
-        }
-
-        .alert-box.is-success {
-            background: #f0fdf4;
-            color: #0d47a1;
-            border: 1px solid #bbf7d0;
-        }
-
-        .alert-box .a-icon {
-            font-size: 1rem;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
-
-        .alert-box .a-close {
-            margin-left: auto;
-            background: none;
-            border: none;
-            cursor: pointer;
-            opacity: 0.5;
-            color: inherit;
-            padding: 0;
-            font-size: 0.85rem;
-            flex-shrink: 0;
-        }
-
-        .alert-box .a-close:hover {
-            opacity: 1;
-        }
-
-        /* ── Submit button ── */
         .btn-submit {
             width: 100%;
-            padding: 0.8rem 1rem;
-            background: var(--green-600);
-            border: none;
-            border-radius: 9px;
+            height: 48px;
+            border: 0;
+            border-radius: 5px;
+            background: var(--navy);
             color: #fff;
-            font-size: 0.9rem;
-            font-weight: 600;
-            font-family: 'Inter', sans-serif;
+            font: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            transition: background 0.15s;
-            position: relative;
+            gap: 8px;
         }
 
-        .btn-submit:hover {
-            background: var(--green-700);
-        }
-
-        .btn-submit.loading .btn-text {
-            opacity: 0;
-        }
-
-        .btn-submit.loading .btn-spinner {
-            display: flex;
-        }
-
-        .btn-spinner {
-            display: none;
-            position: absolute;
-            align-items: center;
-            gap: 0.5rem;
-        }
+        .btn-submit:hover { background: #0a3264; }
+        .btn-submit:disabled { opacity: 0.75; cursor: wait; }
+        .btn-spinner { display: none; }
+        .btn-submit.loading .btn-text { display: none; }
+        .btn-submit.loading .btn-spinner { display: inline-flex; align-items: center; gap: 8px; }
 
         .spinner-ring {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border: 2px solid rgba(255, 255, 255, 0.35);
             border-top-color: #fff;
             border-radius: 50%;
             animation: spin 0.7s linear infinite;
         }
 
-        @keyframes spin {
-            to {
-                transform: rotate(360deg);
-            }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .auth-note {
+            margin-top: 22px;
+            font-size: 0.78rem;
+            color: #8b98ab;
         }
 
-        /* ── Footer ── */
-        .login-footer {
-            text-align: center;
-            font-size: 0.75rem;
-            color: #94a3b8;
-            margin-top: 1.5rem;
-        }
-
-        .login-footer a {
-            color: var(--slate-500);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .login-footer a:hover {
-            color: var(--green-600);
-        }
-
-        @keyframes fadeSlideUp {
-            from {
-                opacity: 0;
-                transform: translateY(14px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .login-card {
-                padding: 2rem 1.5rem;
-            }
+        @media (max-width: 860px) {
+            .auth { grid-template-columns: 1fr; }
+            .auth-aside { padding: 28px 24px 32px; }
+            .auth-aside h1 { margin-top: 28px; font-size: 1.8rem; }
+            .auth-points, .auth-aside small { display: none; }
         }
     </style>
 </head>
 
 <body>
-
-    <img src="{{ asset('images/logo_laafi_tiim.jpeg') }}" alt="" class="watermark" aria-hidden="true">
-
-    <div class="login-wrap">
-        <div class="brand">
-            <img src="{{ asset('images/logo_laafi_tiim.jpeg') }}" alt="MARKET PLACE" class="brand-logo">
-            <div class="brand-name">MARKET <span>PLACE</span></div>
-        </div>
-
-        <div class="login-card">
-            <h1 class="form-title">Connexion</h1>
-            <p class="form-subtitle">Accédez à votre espace de gestion</p>
-
-            {{-- ── Alerts ── --}}
-            @if ($errors->any())
-                <div class="alert-box is-error">
-                    <i class="bi bi-exclamation-circle-fill a-icon"></i>
+    <main class="auth">
+        <section class="auth-aside">
+            <div>
+                <div class="auth-brand">
+                    <img src="{{ asset('images/logo_laafi_tiim.jpeg') }}" alt="">
                     <div>
-                        <strong>Identifiants incorrects</strong>
-                        <ul class="mb-0 mt-1 ps-3">
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
+                        <strong>Market Place</strong>
+                        <span>Stocks & trésorerie</span>
                     </div>
-                    <button class="a-close" onclick="this.closest('.alert-box').remove()"><i
-                            class="bi bi-x-lg"></i></button>
                 </div>
-            @endif
+                <h1>Gérez chaque magazin avec précision.</h1>
+                <p>Ventes, achats, stock et encaissements, réunis dans un seul espace.</p>
+                <ul class="auth-points">
+                    <li><i class="bi bi-receipt"></i> Factures et bons de commande</li>
+                    <li><i class="bi bi-box-seam"></i> Stock réel par magazin</li>
+                    <li><i class="bi bi-cash-coin"></i> Encaissements et dépenses</li>
+                </ul>
+            </div>
+            <small>&copy; {{ date('Y') }} Market Place</small>
+        </section>
 
-            @if (session('error'))
-                <div class="alert-box is-error">
-                    <i class="bi bi-exclamation-circle-fill a-icon"></i>
-                    <div><strong>Erreur : </strong>{{ session('error') }}</div>
-                    <button class="a-close" onclick="this.closest('.alert-box').remove()"><i
-                            class="bi bi-x-lg"></i></button>
-                </div>
-            @endif
+        <section class="auth-panel">
+            <div class="auth-card">
+                <div class="auth-kicker">Espace privé</div>
+                <h2>Connexion</h2>
+                <p class="lead">Entrez votre numéro et votre mot de passe.</p>
 
-            @if (session('success'))
-                <div class="alert-box is-success">
-                    <i class="bi bi-check-circle-fill a-icon"></i>
-                    <div><strong>Succès : </strong>{{ session('success') }}</div>
-                    <button class="a-close" onclick="this.closest('.alert-box').remove()"><i
-                            class="bi bi-x-lg"></i></button>
-                </div>
-            @endif
-
-            <form method="POST" action="{{ route('login_admin') }}" id="loginForm">
-                @csrf
-
-                {{-- Telephone --}}
-                <div class="field-group">
-                    <label class="field-label" for="telephone">Numéro de téléphone</label>
-                    <div class="field-wrap">
-                        <i class="bi bi-telephone f-icon"></i>
-                        <input type="text" name="telephone" id="telephone" placeholder="123-456-7890"
-                            value="{{ old('telephone') }}"
-                            class="{{ $errors->has('telephone') ? 'is-invalid' : '' }}" required autocomplete="telephone">
+                @if ($errors->any())
+                    <div class="alert-box">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        <div>
+                            <strong>Identifiants incorrects</strong>
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                        <button type="button" onclick="this.closest('.alert-box').remove()" aria-label="Fermer"><i class="bi bi-x-lg"></i></button>
                     </div>
-                    @error('telephone')
-                        <span class="field-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</span>
-                    @enderror
-                </div>
+                @endif
 
-                {{-- Password --}}
-                <div class="field-group">
-                    <label class="field-label" for="password">Mot de passe</label>
-                    <div class="field-wrap">
-                        <i class="bi bi-lock f-icon"></i>
-                        <input type="password" name="password" id="password" placeholder="••••••••"
-                            class="{{ $errors->has('password') ? 'is-invalid' : '' }}" required
-                            autocomplete="current-password" style="padding-right:2.75rem;">
-                        <button type="button" class="btn-toggle-pw" onclick="togglePw()" title="Afficher/Masquer">
-                            <i class="bi bi-eye" id="eyeIcon"></i>
-                        </button>
+                @if (session('error'))
+                    <div class="alert-box">
+                        <i class="bi bi-exclamation-circle-fill"></i>
+                        <div>{{ session('error') }}</div>
+                        <button type="button" onclick="this.closest('.alert-box').remove()" aria-label="Fermer"><i class="bi bi-x-lg"></i></button>
                     </div>
-                    @error('password')
-                        <span class="field-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</span>
-                    @enderror
-                </div>
+                @endif
 
-                {{-- Remember me --}}
-                <div class="remember-row">
-                    <label class="check-label">
+                @if (session('success'))
+                    <div class="alert-box is-success">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <div>{{ session('success') }}</div>
+                        <button type="button" onclick="this.closest('.alert-box').remove()" aria-label="Fermer"><i class="bi bi-x-lg"></i></button>
+                    </div>
+                @endif
+
+                <form method="POST" action="{{ route('login_admin') }}" id="loginForm">
+                    @csrf
+                    <div class="field">
+                        <label for="telephone">Numéro de téléphone</label>
+                        <div class="field-wrap">
+                            <i class="bi bi-telephone f-icon"></i>
+                            <input type="text" name="telephone" id="telephone" placeholder="00 00 00 00"
+                                value="{{ old('telephone') }}"
+                                class="{{ $errors->has('telephone') ? 'is-invalid' : '' }}"
+                                required autocomplete="username">
+                        </div>
+                        @error('telephone')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="field">
+                        <label for="password">Mot de passe</label>
+                        <div class="field-wrap">
+                            <i class="bi bi-lock f-icon"></i>
+                            <input type="password" name="password" id="password" placeholder="Votre mot de passe"
+                                class="{{ $errors->has('password') ? 'is-invalid' : '' }}"
+                                required autocomplete="current-password">
+                            <button type="button" class="btn-toggle-pw" onclick="togglePw()" title="Afficher ou masquer">
+                                <i class="bi bi-eye" id="eyeIcon"></i>
+                            </button>
+                        </div>
+                        @error('password')
+                            <span class="field-error">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <label class="remember">
                         <input type="checkbox" name="remember" value="true" id="rememberMe">
-                        <span>Se souvenir de moi</span>
+                        Se souvenir de moi
                     </label>
-                </div>
 
-                {{-- Submit --}}
-                <button type="submit" class="btn-submit" id="submitBtn">
-                    <span class="btn-text">
-                        <i class="bi bi-box-arrow-in-right"></i>
-                        Se connecter
-                    </span>
-                    <span class="btn-spinner">
-                        <span class="spinner-ring"></span>
-                        Connexion en cours…
-                    </span>
-                </button>
-            </form>
-        </div>
+                    <button type="submit" class="btn-submit" id="submitBtn">
+                        <span class="btn-text">Se connecter</span>
+                        <span class="btn-spinner"><span class="spinner-ring"></span> Connexion…</span>
+                    </button>
+                </form>
 
-        <div class="login-footer">
-            &copy; {{ date('Y') }} MARKET PLACE · Développé par <a href="#">Mokutech</a>
-        </div>
-    </div>
+                <p class="auth-note">Développé par Mokutech</p>
+            </div>
+        </section>
+    </main>
 
     <script>
         function togglePw() {
             const input = document.getElementById('password');
             const icon = document.getElementById('eyeIcon');
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.replace('bi-eye', 'bi-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.replace('bi-eye-slash', 'bi-eye');
-            }
+            const visible = input.type === 'text';
+            input.type = visible ? 'password' : 'text';
+            icon.classList.toggle('bi-eye', visible);
+            icon.classList.toggle('bi-eye-slash', !visible);
         }
 
-        document.getElementById('loginForm').addEventListener('submit', function() {
+        document.getElementById('loginForm').addEventListener('submit', function () {
             const btn = document.getElementById('submitBtn');
             btn.classList.add('loading');
             btn.disabled = true;
         });
     </script>
-
 </body>
 
 </html>

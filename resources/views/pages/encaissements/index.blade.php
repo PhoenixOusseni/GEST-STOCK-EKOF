@@ -13,9 +13,11 @@
                 </nav>
             </div>
             <div class="mx-0">
+                @if (\App\Support\Acces::peutCreer())
                 <a href="{{ route('gestions_encaissements.create') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-circle"></i>&nbsp; Nouvel Encaissement
                 </a>
+                @endif
                 <a href="{{ route('gestions_encaissements.unsettled') }}" class="btn btn-warning btn-sm">
                     <i class="bi bi-hourglass-split"></i> Encaissements à Solder
                 </a>

@@ -2,7 +2,7 @@
     $user = auth()->user();
     $initial = strtoupper(mb_substr($user->prenom ?? $user->nom ?? 'U', 0, 1));
     $fullName = trim(($user->prenom ?? '') . ' ' . ($user->nom ?? 'Utilisateur'));
-    $role = $user->role ?? 'Utilisateur';
+    $role = \App\Support\Acces::libelle($user->role ?? null);
 
     $route = optional(request()->route())->getName() ?? '';
     $pageTitle = match (true) {
@@ -52,9 +52,15 @@
 
     <div class="topbar-end">
         @if ($depotActif)
-            <a href="{{ route('depots.quitter') }}" class="depot-chip" title="Changer de magazin">
-                <i class="bi bi-building"></i> {{ $depotActif->designation }}
-            </a>
+            @if (\App\Support\Acces::estMagazin())
+                <span class="depot-chip" title="Magazin affecté">
+                    <i class="bi bi-building"></i> {{ $depotActif->designation }}
+                </span>
+            @else
+                <a href="{{ route('depots.quitter') }}" class="depot-chip" title="Changer de magazin">
+                    <i class="bi bi-building"></i> {{ $depotActif->designation }}
+                </a>
+            @endif
         @endif
         <time class="topbar-date d-none d-xl-inline" datetime="{{ now()->toDateString() }}">
             {{ \Illuminate\Support\Carbon::now()->locale('fr')->translatedFormat('l j F') }}
@@ -95,9 +101,11 @@
                 <a class="user-menu-item" href="{{ route('utilisateurs.profil') }}">
                     <i class="bi bi-person"></i> Mon profil
                 </a>
+                @if (\App\Support\Acces::estAdmin())
                 <a class="user-menu-item" href="{{ route('parametres') }}">
                     <i class="bi bi-gear"></i> Paramètres
                 </a>
+                @endif
                 <a class="user-menu-item" href="{{ route('help') }}">
                     <i class="bi bi-question-circle"></i> Aide
                 </a>

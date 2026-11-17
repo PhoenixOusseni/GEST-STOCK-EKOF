@@ -20,17 +20,13 @@
                 <a href="{{ route('bons_commandes.print', $bon->id) }}" target="_blank" class="btn btn-secondary btn-sm">
                     <i class="bi bi-printer"></i> Imprimer
                 </a>
-                @if ($bon->statut === 'en_cours')
+                @if ($bon->statut === 'en_cours' && \App\Support\Acces::peutModifier('bon'))
                     <a href="{{ route('gestions_bons_commandes.edit', $bon->id) }}" class="btn btn-warning btn-sm">
                         <i class="bi bi-pencil-square"></i> Modifier
                     </a>
-                    <form action="{{ route('bons_commandes.transformer', $bon->id) }}" method="POST" class="d-inline"
-                        onsubmit="return confirm('Transformer ce bon en facture ? Le stock du magazin sera diminué et le bon passera à validé.');">
-                        @csrf
-                        <button type="submit" class="btn btn-success btn-sm">
-                            <i class="bi bi-receipt"></i> Transformer en facture
-                        </button>
-                    </form>
+                    <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalTransformer">
+                        <i class="bi bi-receipt"></i> Transformer en facture
+                    </button>
                     <form action="{{ route('gestions_bons_commandes.destroy', $bon->id) }}" method="POST" class="d-inline"
                         onsubmit="return confirm('Supprimer ce bon de commande ?');">
                         @csrf
@@ -49,6 +45,13 @@
             <div class="alert alert-success alert-dismissible fade show">
                 {{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
             </div>
         @endif
         @if (session('error'))
@@ -106,14 +109,6 @@
                                 <td class="fw-bold">{{ number_format($bon->montant_total, 0, ',', ' ') }} FCFA</td>
                             </tr>
                             <tr>
-                                <td class="fw-bold">Versement prévu</td>
-                                <td>{{ number_format($bon->montant_paye, 0, ',', ' ') }} FCFA</td>
-                            </tr>
-                            <tr>
-                                <td class="fw-bold">Reste</td>
-                                <td>{{ number_format($bon->reste_a_payer, 0, ',', ' ') }} FCFA</td>
-                            </tr>
-                            <tr>
                                 <td class="fw-bold">Facture</td>
                                 <td>
                                     @if ($bon->vente)
@@ -163,4 +158,66 @@
             </div>
         </div>
     </section>
+
+    @if ($bon->statut === 'en_cours')
+        <div class="modal fade" id="modalTransformer" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Transformer en facture</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form action="{{ route('bons_commandes.transformer', $bon->id) }}" method="POST">
+                        @csrf
+                        <div class="modal-body">
+                            <p class="small text-muted">Le stock du magazin sera diminué et le bon passera à validé. Le versement est enregistré sur la facture.</p>
+                            <div class="mb-3">
+                                <label class="form-label">Montant du bon</label>
+                                <input type="text" class="form-control" value="{{ number_format($bon->montant_total, 0, ',', ' ') }} FCFA" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="montant_paye" class="form-label">Versement</label>
+                                <input type="number" class="form-control" id="montant_paye" name="montant_paye"
+                                    value="{{ old('montant_paye', 0) }}" step="0.01" min="0" max="{{ $bon->montant_total }}">
+                                <div class="form-text">Laissez 0 si aucun encaissement pour le moment. Maximum : {{ number_format($bon->montant_total, 0, ',', ' ') }} FCFA.</div>
+                            </div>
+                            <div class="row">
+                                <div class="col-6 mb-3">
+                                    <label for="date_paiement" class="form-label">Date</label>
+                                    <input type="date" class="form-control" id="date_paiement" name="date_paiement" value="{{ date('Y-m-d') }}">
+                                </div>
+                                <div class="col-6 mb-3">
+                                    <label for="mode_paiement" class="form-label">Mode</label>
+                                    <select class="form-select" id="mode_paiement" name="mode_paiement">
+                                        <option>Espèces</option>
+                                        <option>Chèque</option>
+                                        <option>Virement bancaire</option>
+                                        <option>Mobile Money</option>
+                                        <option>Carte bancaire</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Annuler</button>
+                            <button type="submit" class="btn btn-success btn-sm">Créer la facture</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    @endif
 @endsection
+
+@if ($errors->any())
+    @section('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const modal = document.getElementById('modalTransformer');
+                if (modal && window.bootstrap) {
+                    bootstrap.Modal.getOrCreateInstance(modal).show();
+                }
+            });
+        </script>
+    @endsection
+@endif

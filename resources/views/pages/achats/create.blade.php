@@ -269,6 +269,9 @@
             quantiteInput.addEventListener('input', updateTotal);
         }
 
+        const montantPayeInput = document.getElementById('montant_paye');
+        let versementAuto = !montantPayeInput.value || parseFloat(montantPayeInput.value) === 0;
+
         function updateReste() {
             const total = parseFloat(document.getElementById('total-display').textContent.replace(/\s/g, '').replace('FCFA', '').replace(',', '.')) || 0;
             const paye = parseFloat(document.getElementById('montant_paye').value) || 0;
@@ -292,10 +295,16 @@
             });
             document.getElementById('total-display').textContent = total.toLocaleString('fr-FR') + ' FCFA';
             document.getElementById('articles-count').textContent = document.querySelectorAll('.article-row').length;
+            if (versementAuto) {
+                montantPayeInput.value = String(Math.round(total * 100) / 100);
+            }
             updateReste();
         }
 
-        document.getElementById('montant_paye').addEventListener('input', updateReste);
+        montantPayeInput.addEventListener('input', function () {
+            versementAuto = false;
+            updateReste();
+        });
 
         document.getElementById('add-article').addEventListener('click', function() {
             const container = document.getElementById('articles-container');

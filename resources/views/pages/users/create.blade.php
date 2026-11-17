@@ -100,28 +100,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-3">
-                                <label for="role" class="col-md-4 col-form-label">Rôle <span
-                                        class="text-danger">*</span></label>
-                                <div class="col-md-8">
-                                    <select class="form-select @error('role') is-invalid @enderror" id="role"
-                                        name="role" required>
-                                        <option value="">-- Sélectionner un rôle --</option>
-                                        <option value="user" {{ old('role') === 'user' ? 'selected' : '' }}>
-                                            <i class="bi bi-person"></i> Utilisateur
-                                        </option>
-                                        <option value="manager" {{ old('role') === 'manager' ? 'selected' : '' }}>
-                                            <i class="bi bi-person-check"></i> Manager
-                                        </option>
-                                        <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>
-                                            <i class="bi bi-shield-lock"></i> Administrateur
-                                        </option>
-                                    </select>
-                                    @error('role')
-                                        <span class="invalid-feedback">{{ $message }}</span>
-                                    @enderror
-                                </div>
-                            </div>
+                            @include('pages.users._role')
 
                             <div class="row">
                                 <div class="mx-0 mb-3 d-flex gap-2">

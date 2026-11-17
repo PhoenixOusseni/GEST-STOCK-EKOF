@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Depot;
 use App\Models\EntreeDetail;
 use App\Models\VenteDetail;
+use App\Support\Acces;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -16,6 +17,7 @@ class DepotController extends Controller
     public function index()
     {
         $depots = Depot::query()
+            ->when(Acces::estMagazin(), fn ($q) => $q->whereKey(auth()->user()->depot_id))
             ->withCount(['stocks as articles_en_stock' => fn ($q) => $q->where('quantite_disponible', '>', 0)])
             ->withSum('stocks as quantite_totale', 'quantite_disponible')
             ->orderBy('designation')

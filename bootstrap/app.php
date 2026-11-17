@@ -13,6 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'depot.actif' => \App\Http\Middleware\EnsureDepotActif::class,
+            'role.acces' => \App\Http\Middleware\RestreindreRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

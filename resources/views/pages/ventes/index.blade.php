@@ -24,9 +24,11 @@
                         <li><a class="dropdown-item" target="_blank" href="{{ route('ventes.printPeriode', 'annee') }}">Ventes de l'année</a></li>
                     </ul>
                 </div>
+                @if (\App\Support\Acces::peutCreer())
                 <a href="{{ route('gestions_ventes.create') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-circle"></i>&nbsp; Nouvelle Vente
                 </a>
+                @endif
             </div>
         </div>
     </div>
@@ -163,13 +165,17 @@
                                                             <i class="bi bi-eye"></i>
                                                         </a>
                                                         @if($vente->statut === 'non_solde')
+                                                            @if (\App\Support\Acces::peutModifier('facture'))
                                                             <a href="{{ route('gestions_ventes.edit', $vente) }}" class="btn btn-sm btn-warning" title="Modifier">
                                                                 <i class="bi bi-pencil-square"></i>
                                                             </a>
+                                                            @endif
+                                                            @if (\App\Support\Acces::peutCreer())
                                                             <button type="button" class="btn btn-sm btn-primary" title="Paiement"
                                                                 data-bs-toggle="modal" data-bs-target="#modalSolderVente{{ $vente->id }}">
                                                                 <i class="bi bi-cash-coin"></i>
                                                             </button>
+                                                            @endif
                                                         @endif
                                                     </div>
                                                 </td>

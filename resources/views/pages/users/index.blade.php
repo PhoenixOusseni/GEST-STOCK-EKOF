@@ -41,6 +41,7 @@
                                             <th>Nom</th>
                                             <th>Téléphone</th>
                                             <th>Rôle</th>
+                                            <th>Magazin</th>
                                             <th>Date Création</th>
                                             <th class="text-end">Actions</th>
                                         </tr>
@@ -56,20 +57,19 @@
                                                     <span class="badge bg-info">{{ $user->telephone }}</span>
                                                 </td>
                                                 <td>
-                                                    @if ($user->role === 'admin')
-                                                        <span class="badge bg-danger">
-                                                            <i class="bi bi-shield-lock"></i> Admin
-                                                        </span>
-                                                    @elseif ($user->role === 'manager')
-                                                        <span class="badge bg-warning">
-                                                            <i class="bi bi-person-check"></i> Manager
-                                                        </span>
-                                                    @else
-                                                        <span class="badge bg-secondary">
-                                                            <i class="bi bi-person"></i> Utilisateur
-                                                        </span>
-                                                    @endif
+                                                    @php
+                                                        $roleBadges = [
+                                                            'administrateur' => ['bg-danger', 'bi-shield-lock'],
+                                                            'caisse' => ['bg-primary', 'bi-cash-coin'],
+                                                            'magazin' => ['bg-info text-dark', 'bi-building'],
+                                                        ];
+                                                        [$roleBg, $roleIcon] = $roleBadges[$user->role] ?? ['bg-secondary', 'bi-person'];
+                                                    @endphp
+                                                    <span class="badge {{ $roleBg }}">
+                                                        <i class="bi {{ $roleIcon }}"></i> {{ \App\Support\Acces::libelle($user->role) }}
+                                                    </span>
                                                 </td>
+                                                <td>{{ $user->depot->designation ?? '—' }}</td>
                                                 <td>
                                                     <small class="text-muted">
                                                         {{ $user->created_at ?? 'N/A' }}

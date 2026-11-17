@@ -31,6 +31,9 @@ body.app-body main.app-content {
     padding: 0;
     min-height: calc(100vh - var(--topbar-h));
     background: transparent;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .app-sidebar {
@@ -512,6 +515,7 @@ body.app-body main.app-content {
 .app-page {
     width: 100%;
     padding: 24px 28px 8px;
+    flex: 1 0 auto;
 }
 
 .app-page .card,
@@ -521,6 +525,27 @@ body.app-body main.app-content {
 .app-page .pagetitle,
 .app-page .badge {
     border-radius: 5px;
+}
+
+.app-page input.premier-versement {
+    background-color: #ffe14a !important;
+    color: #b42318 !important;
+    font-weight: 700;
+    font-size: 1.05rem;
+    border-color: #e0b400;
+}
+
+.app-page input.premier-versement::placeholder {
+    color: #b42318;
+    font-weight: 700;
+    opacity: 0.7;
+}
+
+.app-page input.premier-versement:focus {
+    background-color: #ffe14a !important;
+    color: #b42318 !important;
+    border-color: #b42318;
+    box-shadow: 0 0 0 3px rgba(180, 35, 24, 0.18);
 }
 
 .app-page .card {
@@ -535,6 +560,27 @@ body.app-body main.app-content {
 
 .app-page .pagetitle {
     border-radius: 5px;
+    overflow: visible;
+    z-index: 5;
+}
+
+.app-page .pagetitle .dropdown-menu {
+    z-index: 30;
+    background: #fff;
+    border: 1px solid #e3eaf3;
+    border-radius: 5px;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+}
+
+.app-page .pagetitle .dropdown-item {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.app-page .pagetitle .dropdown-item:hover,
+.app-page .pagetitle .dropdown-item:focus {
+    background: #e3f2fd;
+    color: #0c3d78;
 }
 
 .app-toast-wrap {
@@ -545,20 +591,35 @@ body.app-body main.app-content {
 }
 
 .app-footer {
-    margin-top: auto;
+    margin: 12px 28px 20px;
+    padding: 0;
+    background: #fff;
+    border: 1px solid var(--shell-line);
+    border-radius: 5px;
+    box-shadow: 0 8px 24px rgba(13, 71, 161, 0.05);
+    overflow: hidden;
+    color: var(--shell-muted);
+    font-size: 0.82rem;
+}
+
+.footer-accent {
+    height: 4px;
+    background: linear-gradient(90deg, #0c3d78 0 78%, #b42318 78% 100%);
+}
+
+.footer-inner {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    padding: 16px 28px 20px;
-    color: var(--shell-muted);
-    font-size: 0.82rem;
+    gap: 18px;
+    padding: 14px 18px;
 }
 
 .app-footer .footer-brand {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    min-width: 0;
 }
 
 .app-footer .footer-brand strong,
@@ -567,18 +628,54 @@ body.app-body main.app-content {
 }
 
 .app-footer .footer-brand strong {
-    color: #334155;
+    color: #0c3d78;
+    font-size: 0.92rem;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+}
+
+.app-footer .footer-brand span {
+    color: #90a4c0;
+    font-size: 0.75rem;
 }
 
 .footer-mark {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     border-radius: 5px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: #ffebee;
-    color: #c62828;
+    background: #0c3d78;
+    color: #fff;
+    font-size: 1rem;
+    flex-shrink: 0;
+    box-shadow: inset 0 -3px 0 #b42318;
+}
+
+.footer-copy {
+    margin: 0;
+    color: #64748b;
+    text-align: center;
+}
+
+.footer-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #0c3d78;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.footer-sep {
+    width: 4px;
+    height: 4px;
+    border-radius: 5px;
+    background: #b42318;
 }
 
 @media (min-width: 992px) {
@@ -669,9 +766,17 @@ body.app-body main.app-content {
     }
 
     .app-footer {
-        padding: 14px;
+        margin: 12px 14px 16px;
+    }
+
+    .footer-inner {
         flex-direction: column;
         align-items: flex-start;
+        gap: 10px;
+    }
+
+    .footer-copy {
+        text-align: left;
     }
 }
 
@@ -703,13 +808,18 @@ body.app-body main.app-content {
     .article-row > .row > div:has(.quantite-input),
     .article-row > .row > div:has(input[name="stock[]"]),
     .article-row > .row > div:has(input[name="quantites[]"]),
-    .article-row > .row > div:has(.prix-vente-input),
     .article-row > .row > div:has(.prix-unitaire-input),
     .article-row > .row > div:has(.prix-unitaire),
     .article-row > .row > div:has(.stock-disponible) {
         flex: 0 0 108px !important;
         width: 108px !important;
         max-width: 108px !important;
+    }
+
+    .article-row > .row > div:has(.prix-vente-input) {
+        flex: 0 0 180px !important;
+        width: 180px !important;
+        max-width: 180px !important;
     }
 }
 
@@ -919,4 +1029,32 @@ form.depot-pending #articles-container {
     .app-page {
         padding: 0 !important;
     }
+}
+
+body.role-magazin .app-page a[href$="/edit"],
+body.role-magazin .app-page a.btn-danger,
+body.role-magazin .app-page a.btn-outline-danger,
+body.role-magazin .app-page button.btn-warning,
+body.role-magazin .app-page button.btn-danger,
+body.role-magazin .app-page button.btn-success,
+body.role-magazin .app-page a[href*="/create"],
+body.role-magazin .app-page button[data-bs-toggle="modal"] {
+    display: none !important;
+}
+
+body.role-caisse .app-page a[href*="gestions_ventes/"][href$="/edit"],
+body.role-caisse .app-page a[href*="gestions_bons_commandes/"][href$="/edit"],
+body.role-caisse .app-page a[href*="gestions_entrees/"][href$="/edit"],
+body.role-caisse .app-page a[href*="gestions_sorties/"][href$="/edit"],
+body.role-caisse .app-page a[href*="gestions_inventaires/"][href$="/edit"],
+body.role-caisse .app-page a[href*="gestions_depenses/"][href$="/edit"],
+body.role-caisse .app-page form[action*="gestions_ventes/"] button.btn-danger,
+body.role-caisse .app-page form[action*="gestions_bons_commandes/"] button.btn-danger,
+body.role-caisse .app-page form[action*="gestions_entrees/"] button.btn-danger,
+body.role-caisse .app-page form[action*="gestions_sorties/"] button.btn-danger,
+body.role-caisse .app-page form[action*="gestions_inventaires/"] button.btn-danger,
+body.role-caisse .app-page form[action*="gestions_depenses/"] button.btn-danger,
+body.role-caisse .app-page button[data-bs-target="#modalTransformer"],
+body.role-caisse .app-page form[action*="/transformer"] {
+    display: none !important;
 }

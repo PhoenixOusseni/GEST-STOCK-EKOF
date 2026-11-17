@@ -72,14 +72,6 @@
 
             <div class="inv-totals-wrap">
                 <div class="inv-totals">
-                    <div class="inv-totals-row">
-                        <span>Versement prévu</span>
-                        <span>{{ $fmt($bon->montant_paye) }}</span>
-                    </div>
-                    <div class="inv-totals-row">
-                        <span>Reste</span>
-                        <span>{{ $fmt($bon->reste_a_payer) }}</span>
-                    </div>
                     <div class="inv-totals-grand">
                         <span class="lbl">Total</span>
                         <span class="val">{{ $fmt($bon->montant_total) }}</span>

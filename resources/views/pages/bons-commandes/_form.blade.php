@@ -21,7 +21,40 @@
     <div class="mb-4" style="background: rgb(232, 240, 243); padding: 15px; border-radius: 5px;">
         <h6 class="mb-3"><i class="bi bi-info-circle"></i> Informations du bon de commande</h6>
         <p class="small text-muted">Les informations sont les mêmes que sur une facture. Le stock du magazin est affiché, mais il n'est pas diminué tant que le bon n'est pas transformé en facture.</p>
-        @include('partials.depot-select')
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="depot_id" class="small fw-semibold">Magazin <span class="text-danger">*</span></label>
+                @if ($depotActif)
+                    <input type="hidden" name="depot_id" id="depot_id" value="{{ $depotActif->id }}">
+                    <input type="text" class="form-control" value="{{ $depotActif->designation }}" readonly>
+                    <small class="text-muted">Les quantités et le stock concernent ce magazin.</small>
+                @else
+                    <select class="form-select @error('depot_id') is-invalid @enderror" id="depot_id" name="depot_id" required>
+                        <option value="">-- Sélectionner le magazin d'abord --</option>
+                        @foreach ($depots as $depot)
+                            <option value="{{ $depot->id }}" @selected((string) old('depot_id', $depotCourant ?? '') === (string) $depot->id)>
+                                {{ $depot->designation }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <small class="text-muted">Choisissez le magazin avant les articles.</small>
+                @endif
+                @error('depot_id')
+                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                @enderror
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="small d-block">Type de vente <span class="text-danger">*</span></label>
+                <div class="btn-group w-100" role="group">
+                    <input type="radio" class="btn-check" name="type_vente" id="type_vente_detail" value="detail"
+                        @checked(old('type_vente', isset($bon) ? $bon->type_vente : 'detail') === 'detail')>
+                    <label class="btn btn-outline-primary" for="type_vente_detail">Détail</label>
+                    <input type="radio" class="btn-check" name="type_vente" id="type_vente_gros" value="gros"
+                        @checked(old('type_vente', isset($bon) ? $bon->type_vente : 'detail') === 'gros')>
+                    <label class="btn btn-outline-primary" for="type_vente_gros">Gros</label>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-md-4 mb-3">
                 <label class="small">Numéro</label>
@@ -48,28 +81,6 @@
                 @error('client_id')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <label for="montant_paye" class="small">Premier versement <span class="text-muted">(optionnel)</span></label>
-                <input type="number" class="form-control" id="montant_paye" name="montant_paye"
-                    value="{{ old('montant_paye', isset($bon) ? $bon->montant_paye : 0) }}" step="0.01" min="0">
-            </div>
-            <div class="col-md-4 mb-3">
-                <label class="small">Reste à payer</label>
-                <input type="text" class="form-control bg-light fw-bold" id="reste_a_payer_display" readonly>
-            </div>
-            <div class="col-md-4 mb-3">
-                <label class="small d-block">Type de vente <span class="text-danger">*</span></label>
-                <div class="btn-group w-100" role="group">
-                    <input type="radio" class="btn-check" name="type_vente" id="type_vente_detail" value="detail"
-                        @checked(old('type_vente', isset($bon) ? $bon->type_vente : 'detail') === 'detail')>
-                    <label class="btn btn-outline-primary" for="type_vente_detail">Détail</label>
-                    <input type="radio" class="btn-check" name="type_vente" id="type_vente_gros" value="gros"
-                        @checked(old('type_vente', isset($bon) ? $bon->type_vente : 'detail') === 'gros')>
-                    <label class="btn btn-outline-primary" for="type_vente_gros">Gros</label>
-                </div>
             </div>
         </div>
     </div>

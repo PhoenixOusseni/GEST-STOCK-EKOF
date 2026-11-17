@@ -12,9 +12,33 @@
                     </ol>
                 </nav>
             </div>
-            <a href="{{ route('gestions_depenses.create') }}" class="btn btn-primary btn-sm">
-                <i class="bi bi-plus-lg"></i>&nbsp; Nouvelle Dépense
-            </a>
+            <div class="d-flex gap-2">
+                <div class="dropdown">
+                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-printer"></i>&nbsp; Imprimer
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        @if (request()->filled('categorie') || request()->filled('date_debut') || request()->filled('date_fin'))
+                            <li>
+                                <a class="dropdown-item" target="_blank"
+                                    href="{{ route('depenses.printJournal', request()->only(['categorie', 'date_debut', 'date_fin'])) }}">
+                                    Liste filtrée
+                                </a>
+                            </li>
+                        @endif
+                        <li><a class="dropdown-item" target="_blank" href="{{ route('depenses.printJournal') }}">Toutes les dépenses</a></li>
+                        <li><a class="dropdown-item" target="_blank" href="{{ route('depenses.printJournal', ['periode' => 'jour']) }}">Dépenses du jour</a></li>
+                        <li><a class="dropdown-item" target="_blank" href="{{ route('depenses.printJournal', ['periode' => 'semaine']) }}">Dépenses de la semaine</a></li>
+                        <li><a class="dropdown-item" target="_blank" href="{{ route('depenses.printJournal', ['periode' => 'mois']) }}">Dépenses du mois</a></li>
+                        <li><a class="dropdown-item" target="_blank" href="{{ route('depenses.printJournal', ['periode' => 'annee']) }}">Dépenses de l'année</a></li>
+                    </ul>
+                </div>
+                @if (\App\Support\Acces::peutCreer())
+                <a href="{{ route('gestions_depenses.create') }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-lg"></i>&nbsp; Nouvelle Dépense
+                </a>
+                @endif
+            </div>
         </div>
     </div>
 
@@ -95,6 +119,7 @@
                                             </td>
                                             <td>{{ $depense->mode_paiement ?? '-' }}</td>
                                             <td>
+                                                @if (\App\Support\Acces::peutModifier('depense'))
                                                 <a href="{{ route('gestions_depenses.edit', $depense->id) }}"
                                                     class="btn btn-sm btn-warning">
                                                     <i class="bi bi-pencil-square"></i>
@@ -108,6 +133,7 @@
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </form>
+                                                @endif
                                             </td>
                                         </tr>
                                     @empty

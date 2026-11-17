@@ -13,12 +13,14 @@
                 </nav>
             </div>
             <div class="d-flex gap-2">
+                @if (\App\Support\Acces::peutCreer())
                 <a href="{{ route('gestions_fournisseurs.create') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-lg"></i>&nbsp; Ajouter un Fournisseur
                 </a>
                 <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#importModal">
                     <i class="bi bi-upload"></i>&nbsp; Importer CSV
                 </button>
+                @endif
                 <a href="{{ route('fournisseurs.template') }}" class="btn btn-secondary btn-sm">
                     <i class="bi bi-download"></i>&nbsp; Télécharger Template
                 </a>

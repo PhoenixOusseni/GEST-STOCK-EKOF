@@ -12,9 +12,11 @@
                     </ol>
                 </nav>
             </div>
+            @if (\App\Support\Acces::peutCreer())
             <a href="{{ route('gestions_clients.create') }}" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-lg"></i>&nbsp; Ajouter un Client
             </a>
+            @endif
         </div>
     </div><!-- End Page Title -->
     <section class="section">

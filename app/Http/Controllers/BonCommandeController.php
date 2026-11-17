@@ -69,11 +69,10 @@ class BonCommandeController extends Controller
             ]);
 
             $montantTotal = $this->enregistrerLignes($bon, $data['articles'], $data['depot_id']);
-            $montantPaye = (float) ($request->montant_paye ?? 0);
             $bon->update([
                 'montant_total' => $montantTotal,
-                'montant_paye' => $montantPaye,
-                'reste_a_payer' => max(0, $montantTotal - $montantPaye),
+                'montant_paye' => 0,
+                'reste_a_payer' => $montantTotal,
             ]);
 
             DB::commit();
@@ -128,11 +127,10 @@ class BonCommandeController extends Controller
             ]);
             $bon->details()->delete();
             $montantTotal = $this->enregistrerLignes($bon, $data['articles'], $data['depot_id']);
-            $montantPaye = (float) ($request->montant_paye ?? 0);
             $bon->update([
                 'montant_total' => $montantTotal,
-                'montant_paye' => $montantPaye,
-                'reste_a_payer' => max(0, $montantTotal - $montantPaye),
+                'montant_paye' => 0,
+                'reste_a_payer' => $montantTotal,
             ]);
 
             DB::commit();
@@ -160,8 +158,14 @@ class BonCommandeController extends Controller
             ->with('success', 'Bon de commande supprimé.');
     }
 
-    public function transformer(string $id)
+    public function transformer(Request $request, string $id)
     {
+        $request->validate([
+            'montant_paye' => 'nullable|numeric|min:0',
+            'date_paiement' => 'nullable|date',
+            'mode_paiement' => 'nullable|string|max:100',
+        ]);
+
         DB::beginTransaction();
         try {
             $bon = BonCommande::with('details')->lockForUpdate()->findOrFail($id);
@@ -204,13 +208,16 @@ class BonCommandeController extends Controller
                 $stock->decrement('quantite_disponible', $detail->quantite);
             }
 
-            $montantPaye = (float) $bon->montant_paye;
+            $montantPaye = (float) ($request->montant_paye ?? 0);
+            if ($montantPaye > $montantTotal) {
+                throw new \Exception('Le versement ne peut pas dépasser le montant de la facture.');
+            }
             if ($montantPaye > 0) {
                 VentePaiement::create([
                     'vente_id' => $vente->id,
                     'montant' => $montantPaye,
-                    'date_paiement' => now()->toDateString(),
-                    'mode_paiement' => 'Versement du bon de commande',
+                    'date_paiement' => $request->date_paiement ?: now()->toDateString(),
+                    'mode_paiement' => $request->mode_paiement ?: 'Espèces',
                 ]);
             }
 
@@ -261,7 +268,6 @@ class BonCommandeController extends Controller
             'client_id' => 'nullable|exists:clients,id',
             'type_vente' => 'required|in:detail,gros',
             'depot_id' => 'required|exists:depots,id',
-            'montant_paye' => 'nullable|numeric|min:0',
             'articles' => 'required|array|min:1',
             'articles.*.article_id' => 'required|exists:articles,id',
             'articles.*.quantite' => 'required|numeric|min:0.01',

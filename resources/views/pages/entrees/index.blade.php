@@ -15,12 +15,14 @@
                 <a href="{{ route('entrees.printJournal') }}" target="_blank" class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-printer"></i>&nbsp; Imprimer
                 </a>
+                @if (\App\Support\Acces::peutCreer())
                 <a href="{{ route('gestions_entrees.create') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-circle"></i>&nbsp; Nouvelle Entrée
                 </a>
                 <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#importModal">
                     <i class="bi bi-upload"></i>&nbsp; Importer
                 </button>
+                @endif
                 <a href="{{ route('entrees.template') }}" class="btn btn-secondary btn-sm">
                     <i class="bi bi-download"></i>&nbsp; Télécharger
                 </a>
@@ -95,10 +97,12 @@
                                                             class="btn btn-sm btn-success btn-sm">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
+                                                        @if (\App\Support\Acces::peutModifier('entree'))
                                                         <a href="{{ route('gestions_entrees.edit', $entree->id) }}"
                                                             class="btn btn-sm btn-warning btn-sm">
                                                             <i class="bi bi-pencil-square"></i>
                                                         </a>
+                                                        @endif
                                                     </div>
                                                 </td>
                                             </tr>

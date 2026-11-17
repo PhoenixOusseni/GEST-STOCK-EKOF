@@ -7,9 +7,11 @@
                 <h1>Magazins</h1>
                 <p class="text-muted mb-0">Choisissez un magazin pour consulter ses informations.</p>
             </div>
+            @if (\App\Support\Acces::estAdmin())
             <a href="{{ route('gestions_depots.create') }}" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle me-1"></i> Nouveau magazin
             </a>
+            @endif
         </div>
     </div>
 
@@ -26,7 +28,9 @@
                 <div class="card-body text-center py-5">
                     <i class="bi bi-building text-muted" style="font-size:2rem;"></i>
                     <p class="mt-3 mb-3">Aucun magazin n'est encore enregistré.</p>
+                    @if (\App\Support\Acces::estAdmin())
                     <a href="{{ route('gestions_depots.create') }}" class="btn btn-primary">Créer le premier magazin</a>
+                    @endif
                 </div>
             </div>
         @else

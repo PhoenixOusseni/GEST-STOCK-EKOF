@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
                 'prenom' => 'Admin',
                 'telephone' => '67186063',
                 'password' => Hash::make('12345678'),
-                'role' => 'super_admin',
+                'role' => 'administrateur',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

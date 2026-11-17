@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Support\Acces;
+use App\Support\DepotActif;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -27,16 +28,22 @@ class AuthController extends Controller
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate(); // Protection contre fixation de session
 
-            // Vérifier le rôle de l'utilisateur connecté
-            if (Auth::user()) { // 2 pour admin, 3 pour super-admin
-                return redirect()->route('depots.accueil')->with('success', 'Connexion réussie');
+            $user = Auth::user();
+            if ($user && $user->role === Acces::MAGAZIN) {
+                if (! $user->depot_id) {
+                    Auth::logout();
+
+                    return back()->withErrors([
+                        'telephone' => 'Aucun magazin n\'est affecté à ce compte.',
+                    ])->onlyInput('telephone');
+                }
+
+                DepotActif::set((int) $user->depot_id);
+
+                return redirect()->route('dashboard')->with('success', 'Connexion réussie');
             }
 
-            // Déconnexion si le rôle ne correspond pas
-            Auth::logout();
-            return back()->withErrors([
-                'telephone' => 'Vous n\'êtes pas autorisé à accéder à cette section.',
-            ])->onlyInput('telephone');
+            return redirect()->route('depots.accueil')->with('success', 'Connexion réussie');
         }
 
         // Échec : identifiants invalides

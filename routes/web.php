@@ -30,7 +30,7 @@ Route::post('connexion', [AuthController::class, 'login_admin'])->name('login_ad
 Route::post('deconnexion', [AuthController::class, 'logout'])->name('logout');
 
 // Routes protégées
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'role.acces'])->group(function () {
     Route::get('accueil', [PageController::class, 'accueilDepots'])->name('depots.accueil');
     Route::post('accueil/depot/{depot}', [PageController::class, 'choisirDepot'])->name('depots.choisir');
     Route::get('accueil/quitter', [PageController::class, 'quitterDepot'])->name('depots.quitter');
@@ -135,6 +135,7 @@ Route::middleware('auth')->group(function () {
     Route::get('decaissements/print/{id}', [DecaissementController::class, 'printDecaissement'])->name('decaissements.print');
 
     // Gestion des depenses
+    Route::get('depenses/journal/impression', [DepenseController::class, 'printJournal'])->name('depenses.printJournal');
     Route::resource('depenses/gestions_depenses', DepenseController::class)->except(['show']);
 
     // Route API pour récupérer le stock disponible (AJAX)

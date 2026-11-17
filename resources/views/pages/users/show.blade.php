@@ -57,18 +57,19 @@
                         <div class="row mb-3">
                             <label class="col-md-4 fw-bold">Rôle:</label>
                             <div class="col-md-8">
-                                @if ($user->role === 'admin')
-                                    <span class="badge bg-danger">
-                                        <i class="bi bi-shield-lock"></i> Administrateur
-                                    </span>
-                                @elseif ($user->role === 'manager')
-                                    <span class="badge bg-warning">
-                                        <i class="bi bi-person-check"></i> Manager
-                                    </span>
-                                @else
-                                    <span class="badge bg-secondary">
-                                        <i class="bi bi-person"></i> Utilisateur
-                                    </span>
+                                @php
+                                    $roleBadges = [
+                                        'administrateur' => ['bg-danger', 'bi-shield-lock'],
+                                        'caisse' => ['bg-primary', 'bi-cash-coin'],
+                                        'magazin' => ['bg-info text-dark', 'bi-building'],
+                                    ];
+                                    [$roleBg, $roleIcon] = $roleBadges[$user->role] ?? ['bg-secondary', 'bi-person'];
+                                @endphp
+                                <span class="badge {{ $roleBg }}">
+                                    <i class="bi {{ $roleIcon }}"></i> {{ \App\Support\Acces::libelle($user->role) }}
+                                </span>
+                                @if ($user->depot)
+                                    <span class="badge bg-light text-dark border">{{ $user->depot->designation }}</span>
                                 @endif
                             </div>
                         </div>

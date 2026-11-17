@@ -15,9 +15,11 @@
                 <a href="{{ route('articles.printListe') }}" target="_blank" class="btn btn-outline-primary btn-sm">
                     <i class="bi bi-printer"></i>&nbsp; Imprimer
                 </a>
+                @if (\App\Support\Acces::peutCreer())
                 <a href="{{ route('gestions_articles.create') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-circle"></i>&nbsp; Ajouter un article
                 </a>
+                @endif
             </div>
         </div>
     </div><!-- End Page Title -->

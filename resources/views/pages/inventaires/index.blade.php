@@ -12,9 +12,11 @@
                 </ol>
             </nav>
         </div>
+        @if (\App\Support\Acces::peutCreer())
         <a href="{{ route('gestions_inventaires.create') }}" class="btn btn-primary btn-sm">
             <i class="bi bi-plus-circle"></i> Nouvel Inventaire
         </a>
+        @endif
     </div>
 </div>
 
@@ -67,7 +69,7 @@
                                 </td>
                                 <td class="text-center">
                                     <a href="{{ route('gestions_inventaires.show', $inventaire->id) }}" class="btn btn-sm btn-success" title="Voir"><i class="bi bi-eye"></i></a>
-                                    @if($inventaire->statut != 'valide')
+                                    @if($inventaire->statut != 'valide' && \App\Support\Acces::peutModifier('inventaire'))
                                         <a href="{{ route('gestions_inventaires.edit', $inventaire->id) }}" class="btn btn-sm btn-warning" title="Modifier"><i class="bi bi-pencil"></i></a>
                                     @endif
                                     <a href="{{ route('gestions_inventaires.print', $inventaire->id) }}" class="btn btn-sm btn-info" title="Imprimer" target="_blank"><i class="bi bi-printer"></i></a>

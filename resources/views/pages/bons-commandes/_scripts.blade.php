@@ -60,15 +60,7 @@
         });
         document.getElementById('total-display').textContent = total.toLocaleString('fr-FR') + ' FCFA';
         document.getElementById('articles-count').textContent = document.querySelectorAll('.article-row').length;
-        const paye = parseFloat(document.getElementById('montant_paye').value) || 0;
-        const reste = Math.max(0, total - paye);
-        const resteInput = document.getElementById('reste_a_payer_display');
-        resteInput.value = reste.toLocaleString('fr-FR') + ' FCFA';
-        resteInput.classList.toggle('text-danger', reste > 0);
-        resteInput.classList.toggle('text-success', reste <= 0);
     }
-
-    document.getElementById('montant_paye').addEventListener('input', updateTotal);
 
     document.getElementById('add-article').addEventListener('click', function () {
         const container = document.getElementById('articles-container');

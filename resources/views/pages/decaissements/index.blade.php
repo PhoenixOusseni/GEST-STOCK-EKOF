@@ -13,9 +13,11 @@
                 </nav>
             </div>
             <div>
+                @if (\App\Support\Acces::peutCreer())
                 <a href="{{ route('gestions_decaissements.create') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus"></i> Nouveau Décaissement
                 </a>
+                @endif
                 <a href="{{ route('gestions_decaissements.unsettled') }}" class="btn btn-warning btn-sm">
                     <i class="bi bi-exclamation-circle"></i> À Solder
                 </a>

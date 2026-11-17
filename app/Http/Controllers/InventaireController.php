@@ -65,13 +65,13 @@ class InventaireController extends Controller
 
     public function show(String $id)
     {
-        $inventaire = Inventaire::with(['depot', 'user', 'details.article'])->findOrFail($id);
+        $inventaire = DepotActif::inventaires()->with(['depot', 'user', 'details.article'])->findOrFail($id);
         return view('pages.inventaires.show', compact('inventaire'));
     }
 
     public function edit(String $id)
     {
-        $inventaire = Inventaire::with(['depot', 'details.article'])->findOrFail($id);
+        $inventaire = DepotActif::inventaires()->with(['depot', 'details.article'])->findOrFail($id);
         $depots = Depot::orderBy('designation')->get();
         $articles = Article::orderBy('designation')->get();
         return view('pages.inventaires.edit', compact('inventaire', 'depots', 'articles'));
@@ -165,7 +165,7 @@ class InventaireController extends Controller
 
     public function print(String $id)
     {
-        $inventaire = Inventaire::with(['depot', 'user', 'details.article'])->findOrFail($id);
+        $inventaire = DepotActif::inventaires()->with(['depot', 'user', 'details.article'])->findOrFail($id);
         return view('pages.inventaires.print', compact('inventaire'));
     }
 

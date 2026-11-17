@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Depot;
 use App\Models\User;
+use App\Support\Acces;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -13,7 +15,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::paginate(15);
+        $users = User::with('depot')->paginate(15);
         return view('pages.users.index', compact('users'));
     }
 
@@ -22,7 +24,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('pages.users.create');
+        $depots = Depot::orderBy('designation')->get();
+
+        return view('pages.users.create', compact('depots'));
     }
 
     /**
@@ -35,7 +39,8 @@ class UserController extends Controller
             'prenom' => 'required|string|max:255',
             'telephone' => 'required|string|max:255|unique:users,telephone',
             'password' => 'required|string|min:8|confirmed',
-            'role' => 'required|in:user,manager,admin',
+            'role' => 'required|in:caisse,magazin,administrateur',
+            'depot_id' => 'nullable|required_if:role,magazin|exists:depots,id',
         ]);
 
         User::create([
@@ -44,6 +49,7 @@ class UserController extends Controller
             'telephone' => $request->telephone,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+            'depot_id' => $request->role === Acces::MAGAZIN ? $request->depot_id : null,
         ]);
 
         return redirect()->route('gestions_utilisateurs.index')
@@ -65,7 +71,9 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = User::findOrFail($id);
-        return view('pages.users.edit', compact('user'));
+        $depots = Depot::orderBy('designation')->get();
+
+        return view('pages.users.edit', compact('user', 'depots'));
     }
 
     /**
@@ -80,13 +88,15 @@ class UserController extends Controller
             'prenom' => 'required|string|max:255',
             'telephone' => 'required|string|max:255|unique:users,telephone,' . $id,
             'password' => 'nullable|string|min:8|confirmed',
-            'role' => 'required|in:admin,user,manager',
+            'role' => 'required|in:caisse,magazin,administrateur',
+            'depot_id' => 'nullable|required_if:role,magazin|exists:depots,id',
         ]);
 
         $user->nom = $request->nom;
         $user->prenom = $request->prenom;
         $user->telephone = $request->telephone;
         $user->role = $request->role;
+        $user->depot_id = $request->role === Acces::MAGAZIN ? $request->depot_id : null;
 
         if ($request->filled('password')) {
             $user->password = Hash::make($request->password);
@@ -123,6 +133,10 @@ class UserController extends Controller
      */
     public function updateProfil(Request $request, string $id)
     {
+        if ((int) $id !== (int) auth()->id()) {
+            abort(403);
+        }
+
         $user = User::findOrFail($id);
 
         // Validation des données
@@ -163,6 +177,10 @@ class UserController extends Controller
     // change password functionality can be added here if needed
     public function updatePassword(Request $request, string $id)
     {
+        if ((int) $id !== (int) auth()->id()) {
+            abort(403);
+        }
+
         $user = User::findOrFail($id);
 
         $request->validate([

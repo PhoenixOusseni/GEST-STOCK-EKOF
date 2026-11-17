@@ -13,9 +13,11 @@
                 </nav>
             </div>
             <div>
+                @if (\App\Support\Acces::peutCreer())
                 <a href="{{ route('gestions_transferts.create') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-plus-circle"></i> Nouveau Transfert
                 </a>
+                @endif
             </div>
         </div>
     </div>

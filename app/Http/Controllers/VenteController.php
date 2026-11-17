@@ -123,13 +123,13 @@ class VenteController extends Controller
 
     public function show(String $id)
     {
-        $vente = Vente::with(['client', 'details.article', 'details.depot', 'paiements'])->findOrFail($id);
+        $vente = DepotActif::ventes()->with(['client', 'details.article', 'details.depot', 'paiements'])->findOrFail($id);
         return view('pages.ventes.show', compact('vente'));
     }
 
     public function edit(String $id)
     {
-        $vente = Vente::findOrFail($id);
+        $vente = DepotActif::ventes()->findOrFail($id);
         if ($vente->statut === 'solde') {
             return redirect()->route('gestions_ventes.show', $vente->id)
                 ->with('error', 'Impossible de modifier une vente soldée.');
@@ -304,13 +304,13 @@ class VenteController extends Controller
 
     public function printVente(String $id)
     {
-        $vente = Vente::with(['client', 'details.article', 'details.depot'])->findOrFail($id);
+        $vente = DepotActif::ventes()->with(['client', 'details.article', 'details.depot'])->findOrFail($id);
         return view('pages.ventes.print', compact('vente'));
     }
 
     public function printPaiement(String $venteId, String $paiementId)
     {
-        $vente = Vente::with(['client', 'paiements'])->findOrFail($venteId);
+        $vente = DepotActif::ventes()->with(['client', 'paiements'])->findOrFail($venteId);
         $paiement = VentePaiement::where('vente_id', $venteId)->findOrFail($paiementId);
         return view('pages.ventes.print-paiement', compact('vente', 'paiement'));
     }

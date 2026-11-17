@@ -119,13 +119,13 @@ class AchatController extends Controller
 
     public function show(String $id)
     {
-        $achat = Achat::with(['fournisseur', 'details.article', 'details.depot', 'paiements'])->findOrFail($id);
+        $achat = DepotActif::achats()->with(['fournisseur', 'details.article', 'details.depot', 'paiements'])->findOrFail($id);
         return view('pages.achats.show', compact('achat'));
     }
 
     public function printAchat(String $id)
     {
-        $achat = Achat::with(['fournisseur', 'details.article', 'details.depot'])->findOrFail($id);
+        $achat = DepotActif::achats()->with(['fournisseur', 'details.article', 'details.depot'])->findOrFail($id);
         return view('pages.achats.print', compact('achat'));
     }
 

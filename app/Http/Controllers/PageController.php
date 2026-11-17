@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Models\Banque;
 use App\Models\Caisse;
 use App\Models\VenteDetail;
+use App\Support\Acces;
 use App\Support\DepotActif;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -30,6 +31,12 @@ class PageController extends Controller
 
     public function accueilDepots()
     {
+        if (Acces::estMagazin() && auth()->user()->depot_id) {
+            DepotActif::set((int) auth()->user()->depot_id);
+
+            return redirect()->route('dashboard');
+        }
+
         $depots = Depot::query()
             ->withCount(['stocks as articles_en_stock' => fn ($q) => $q->where('quantite_disponible', '>', 0)])
             ->withSum('stocks as quantite_totale', 'quantite_disponible')
@@ -47,6 +54,10 @@ class PageController extends Controller
 
     public function choisirDepot(Depot $depot)
     {
+        if (Acces::estMagazin() && (int) $depot->id !== (int) auth()->user()->depot_id) {
+            abort(403);
+        }
+
         DepotActif::set($depot->id);
 
         return redirect()->route('dashboard')->with('success', 'Magazin ' . $depot->designation . ' sélectionné.');
@@ -54,6 +65,10 @@ class PageController extends Controller
 
     public function quitterDepot()
     {
+        if (Acces::estMagazin()) {
+            return redirect()->route('dashboard');
+        }
+
         DepotActif::forget();
 
         return redirect()->route('depots.accueil');

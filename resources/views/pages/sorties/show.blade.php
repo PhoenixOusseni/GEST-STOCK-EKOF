@@ -17,12 +17,15 @@
                 <a href="{{ route('gestions_sorties.index') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-arrow-left"></i>
                 </a>
+                @if (\App\Support\Acces::peutModifier('sortie'))
                 <a href="{{ route('gestions_sorties.edit', $sortie->id) }}" class="btn btn-warning btn-sm">
                     <i class="bi bi-pencil"></i>
                 </a>
+                @endif
                 <a href="{{ route('sorties.print', $sortie->id) }}" class="btn btn-success btn-sm" target="_blank">
                     <i class="bi bi-printer"></i>
                 </a>
+                @if (\App\Support\Acces::peutModifier('sortie'))
                 <form action="{{ route('gestions_sorties.destroy', $sortie->id) }}" method="POST"
                     onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette sortie ?');">
                     @csrf
@@ -31,6 +34,7 @@
                         <i class="bi bi-trash"></i>
                     </button>
                 </form>
+                @endif
             </div>
         </div>
     </div><!-- End Page Title -->

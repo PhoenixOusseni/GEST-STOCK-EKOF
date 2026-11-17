@@ -17,10 +17,12 @@
                 <a href="{{ route('gestions_ventes.index') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-arrow-left"></i> Retour
                 </a>
+                @if (\App\Support\Acces::peutModifier('facture'))
                 <a href="{{ route('gestions_ventes.edit', $vente->id) }}" class="btn btn-warning btn-sm">
                     <i class="bi bi-pencil-square"></i> Modifier
                 </a>
-                @if($vente->statut === 'non_solde')
+                @endif
+                @if($vente->statut === 'non_solde' && \App\Support\Acces::peutCreer())
                 <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalSolderVente">
                     <i class="bi bi-cash-coin"></i> Solder
                 </button>
@@ -28,6 +30,7 @@
                 <a href="#" class="btn btn-secondary btn-sm" onclick="window.open('{{ route('ventes.print', $vente->id) }}', '_blank')">
                     <i class="bi bi-printer"></i> Imprimer
                 </a>
+                @if (\App\Support\Acces::peutModifier('facture'))
                 <form action="{{ route('gestions_ventes.destroy', $vente->id) }}" method="POST" class="d-inline"
                     onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette vente ?');">
                     @csrf
@@ -36,6 +39,7 @@
                         <i class="bi bi-trash"></i> Supprimer
                     </button>
                 </form>
+                @endif
             </div>
         </div>
     </div>

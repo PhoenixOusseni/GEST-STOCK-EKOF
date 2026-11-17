@@ -17,12 +17,15 @@
                 <a href="{{ route('gestions_entrees.index') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-arrow-left"></i>
                 </a>
+                @if (\App\Support\Acces::peutModifier('entree'))
                 <a href="{{ route('gestions_entrees.edit', $entree->id) }}" class="btn btn-warning btn-sm">
                     <i class="bi bi-pencil"></i>
                 </a>
+                @endif
                 <a href="{{ route('entrees.print', $entree->id) }}" class="btn btn-success btn-sm" target="_blank">
                     <i class="bi bi-printer"></i>
                 </a>
+                @if (\App\Support\Acces::peutModifier('entree'))
                 <form action="{{ route('gestions_entrees.destroy', $entree->id) }}" method="POST"
                     onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette entrée ?');">
                     @csrf
@@ -31,6 +34,7 @@
                         <i class="bi bi-trash"></i>
                     </button>
                 </form>
+                @endif
             </div>
         </div>
     </div><!-- End Page Title -->

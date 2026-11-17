@@ -32,7 +32,7 @@
                             <h2 class="pf-name">{{ $user->prenom }} {{ $user->nom }}</h2>
 
                             <span class="pf-role-badge pf-role-{{ $user->role }}">
-                                <i class="bi bi-shield-check"></i> {{ ucfirst($user->role) }}
+                                <i class="bi bi-shield-check"></i> {{ \App\Support\Acces::libelle($user->role) }}
                             </span>
 
                             <div class="pf-info-list">
@@ -100,7 +100,7 @@
                                         <span class="pf-detail-label">Rôle</span>
                                         <span class="pf-detail-value">
                                             <span class="pf-role-badge pf-role-{{ $user->role }} pf-role-badge-sm">
-                                                {{ ucfirst($user->role) }}
+                                                {{ \App\Support\Acces::libelle($user->role) }}
                                             </span>
                                         </span>
                                     </div>
@@ -315,9 +315,22 @@
             color: #97590b;
         }
 
-        .pf-role-user {
+        .pf-role-user,
+        .pf-role-caisse {
             background: #e3f2fd;
             color: #0d47a1;
+        }
+
+        .pf-role-administrateur,
+        .pf-role-admin,
+        .pf-role-super_admin {
+            background: #fde3e1;
+            color: #b3401d;
+        }
+
+        .pf-role-magazin {
+            background: #e0f2f1;
+            color: #00695c;
         }
 
         .pf-info-list {

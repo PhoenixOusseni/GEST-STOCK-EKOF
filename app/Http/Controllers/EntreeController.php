@@ -118,7 +118,7 @@ class EntreeController extends Controller
      */
     public function show(string $id)
     {
-        $entree = Entree::findOrFail($id);
+        $entree = DepotActif::entrees()->findOrFail($id);
         $entree->load(['fournisseur', 'details.article', 'details.depot']);
         return view('pages.entrees.show', compact('entree'));
     }
@@ -128,7 +128,7 @@ class EntreeController extends Controller
      */
     public function edit(string $id)
     {
-        $entree = Entree::findOrFail($id);
+        $entree = DepotActif::entrees()->findOrFail($id);
         $entree->load(['fournisseur', 'details.article', 'details.depot']);
         $fournisseurs = Fournisseur::orderBy('raison_sociale')->get();
         $articles = Article::orderBy('designation')->get();
@@ -300,7 +300,7 @@ class EntreeController extends Controller
     // Print entree function
     public function printEntree(string $id)
     {
-        $entree = Entree::findOrFail($id);
+        $entree = DepotActif::entrees()->findOrFail($id);
         $entree->load(['fournisseur', 'details.article', 'details.depot']);
         return view('pages.entrees.print', compact('entree'));
     }

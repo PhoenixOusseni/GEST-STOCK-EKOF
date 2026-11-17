@@ -17,6 +17,7 @@
                 <a href="{{ route('gestions_depots.index') }}" class="btn btn-primary btn-sm">
                     <i class="bi bi-arrow-left"></i> Retour
                 </a>
+                @if (\App\Support\Acces::estAdmin())
                 <a href="{{ route('gestions_depots.edit', $depot->id) }}" class="btn btn-warning btn-sm">
                     <i class="bi bi-pencil-square"></i> Modifier
                 </a>
@@ -28,6 +29,7 @@
                         <i class="bi bi-trash"></i> Supprimer
                     </button>
                 </form>
+                @endif
             </div>
         </div>
     </div><!-- End Page Title -->

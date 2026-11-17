@@ -22,6 +22,11 @@ class DepotActif
 
     public static function id(): ?int
     {
+        $user = auth()->user();
+        if ($user && $user->role === 'magazin' && $user->depot_id) {
+            return (int) $user->depot_id;
+        }
+
         $id = session(self::SESSION_KEY);
 
         return $id ? (int) $id : null;

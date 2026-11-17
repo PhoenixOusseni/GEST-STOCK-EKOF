@@ -99,13 +99,17 @@
                                                 <a href="{{ route('gestions_ventes.show', $vente->id) }}" class="btn btn-sm btn-outline-primary" title="Voir">
                                                     <i class="bi bi-eye"></i>
                                                 </a>
+                                                @if (\App\Support\Acces::peutModifier('facture'))
                                                 <a href="{{ route('gestions_ventes.edit', $vente->id) }}" class="btn btn-sm btn-outline-warning" title="Modifier">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
+                                                @endif
+                                                @if (\App\Support\Acces::peutCreer())
                                                 <button type="button" class="btn btn-sm btn-outline-success" title="Paiement"
                                                     data-bs-toggle="modal" data-bs-target="#modalSolderVente{{ $vente->id }}">
                                                     <i class="bi bi-cash-coin"></i>
                                                 </button>
+                                                @endif
                                             </td>
                                         </tr>
                                         @include('partials.modal-solder-vente', ['vente' => $vente])

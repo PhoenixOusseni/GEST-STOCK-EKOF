@@ -120,7 +120,7 @@ class SortieController extends Controller
      */
     public function show(String $id)
     {
-        $sortie = Sortie::with(['client', 'details.article', 'details.depot'])->findOrFail($id);
+        $sortie = DepotActif::sorties()->with(['client', 'details.article', 'details.depot'])->findOrFail($id);
         return view('pages.sorties.show', compact('sortie'));
     }
     /**
@@ -128,7 +128,7 @@ class SortieController extends Controller
      */
     public function edit(String $id)
     {
-        $sortie = Sortie::findOrFail($id);
+        $sortie = DepotActif::sorties()->findOrFail($id);
         $sortie->load(['details']);
         $clients = Client::orderBy('raison_sociale')->get();
         $articles = Article::orderBy('designation')->get();
@@ -367,7 +367,7 @@ class SortieController extends Controller
     // Print sortie function
     public function printSortie($id)
     {
-        $sortie = Sortie::with(['client', 'details.article', 'details.depot'])->findOrFail($id);
+        $sortie = DepotActif::sorties()->with(['client', 'details.article', 'details.depot'])->findOrFail($id);
         return view('pages.sorties.print', compact('sortie'));
     }
 
