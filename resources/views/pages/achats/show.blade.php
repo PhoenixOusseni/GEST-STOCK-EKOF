@@ -1,0 +1,331 @@
+@extends('layouts.master')
+
+@section('content')
+    <div class="pagetitle">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="mx-0">
+                <h1>Détails de l'Achat {{ $achat->numero_achat }}</h1>
+                <nav>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('gestions_achats.index') }}">Achats</a></li>
+                        <li class="breadcrumb-item active">{{ $achat->numero_achat }}</li>
+                    </ol>
+                </nav>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ route('gestions_achats.index') }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+                <a href="{{ route('gestions_achats.edit', $achat->id) }}" class="btn btn-warning btn-sm">
+                    <i class="bi bi-pencil-square"></i> Modifier
+                </a>
+                @if($achat->statut === 'non_solde')
+                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalSolderAchat">
+                    <i class="bi bi-cash-coin"></i> Solder
+                </button>
+                @endif
+                <a href="{{ route('achats.print', $achat->id) }}" class="btn btn-secondary btn-sm" target="_blank">
+                    <i class="bi bi-printer"></i> Imprimer
+                </a>
+                <form action="{{ route('gestions_achats.destroy', $achat->id) }}" method="POST" class="d-inline"
+                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet achat ? Le stock sera annulé.');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i> Supprimer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <section class="section">
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle"></i> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+        @if (session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle"></i> {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        <div class="row">
+            <!-- Informations Générales -->
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            Informations de l'Achat
+                            @if($achat->statut === 'solde')
+                                <span class="badge bg-success fs-6"><i class="bi bi-check-circle"></i> Soldé</span>
+                            @else
+                                <span class="badge bg-warning text-dark fs-6"><i class="bi bi-clock"></i> Non soldé</span>
+                            @endif
+                        </h5>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <td class="fw-bold" style="width: 40%;">Numéro Achat:</td>
+                                            <td><span class="badge bg-primary fs-6">{{ $achat->numero_achat }}</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Date Achat:</td>
+                                            <td>{{ $achat->date_achat->format('d/m/Y') }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Fournisseur:</td>
+                                            <td>
+                                                @if($achat->fournisseur)
+                                                    <strong>{{ $achat->fournisseur->raison_sociale ?? $achat->fournisseur->nom }}</strong>
+                                                    @if($achat->fournisseur->telephone)
+                                                        <br><small class="text-muted"><i class="bi bi-telephone"></i> {{ $achat->fournisseur->telephone }}</small>
+                                                    @endif
+                                                @else
+                                                    <span class="text-muted fst-italic">Sans fournisseur</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        @if($achat->designation)
+                                        <tr>
+                                            <td class="fw-bold">Désignation:</td>
+                                            <td>{{ $achat->designation }}</td>
+                                        </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="col-md-6">
+                                <table class="table table-borderless">
+                                    <tbody>
+                                        <tr>
+                                            <td class="fw-bold">Montant Total:</td>
+                                            <td><span class="fs-5 fw-bold text-success">{{ number_format($achat->montant_total, 0, ',', ' ') }} FCFA</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Montant Payé:</td>
+                                            <td><span class="fw-bold text-primary">{{ number_format($achat->montant_paye, 0, ',', ' ') }} FCFA</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Reste à Payer:</td>
+                                            <td>
+                                                <span class="fw-bold {{ $achat->reste_a_payer > 0 ? 'text-danger fs-5' : 'text-success' }}">
+                                                    {{ number_format($achat->reste_a_payer, 0, ',', ' ') }} FCFA
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Nb. articles:</td>
+                                            <td>{{ $achat->details->count() }} ligne(s)</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="fw-bold">Créé le:</td>
+                                            <td>{{ $achat->created_at->format('d/m/Y H:i') }}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Détails des articles -->
+            <div class="col-lg-12">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title">Articles Achetés</h5>
+                        <hr>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Article</th>
+                                        <th>Magazin</th>
+                                        <th class="text-end">Quantité</th>
+                                        <th class="text-end">Prix Unitaire</th>
+                                        <th class="text-end">Prix Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse ($achat->details as $index => $detail)
+                                        <tr>
+                                            <td>{{ $index + 1 }}</td>
+                                            <td>
+                                                <strong>{{ $detail->article->designation }}</strong>
+                                                <br><small class="text-muted">{{ $detail->article->code }}</small>
+                                            </td>
+                                            <td>{{ $detail->depot->designation }}</td>
+                                            <td class="text-end">{{ number_format($detail->quantite, 2, ',', ' ') }}</td>
+                                            <td class="text-end">{{ number_format($detail->prix_unitaire, 0, ',', ' ') }}
+                                                FCFA</td>
+                                            <td class="text-end fw-bold">
+                                                {{ number_format($detail->prix_total, 0, ',', ' ') }} FCFA</td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted">Aucun article enregistré.</td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <td colspan="5" class="text-end fw-bold">TOTAL</td>
+                                        <td class="text-end fw-bold text-success fs-5">
+                                            {{ number_format($achat->montant_total, 0, ',', ' ') }} FCFA
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Historique des Paiements -->
+            <div class="col-lg-12">
+                <div class="card mt-1">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-clock-history"></i> Historique des Paiements
+                                <span class="badge bg-secondary ms-2">{{ $achat->paiements->count() }}</span>
+                            </h5>
+                            @if($achat->statut === 'non_solde')
+                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalSolderAchat">
+                                <i class="bi bi-plus-circle"></i> Nouveau paiement
+                            </button>
+                            @endif
+                        </div>
+                        @if($achat->paiements->isEmpty())
+                            <div class="alert alert-info mb-0">Aucun paiement enregistré.</div>
+                        @else
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Date</th>
+                                        <th>Mode de paiement</th>
+                                        <th>Notes</th>
+                                        <th class="text-end">Montant</th>
+                                        <th class="text-end">Cumul payé</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php $cumul = 0; @endphp
+                                    @foreach($achat->paiements as $i => $p)
+                                        @php $cumul += $p->montant; @endphp
+                                        <tr>
+                                            <td>{{ $i + 1 }}</td>
+                                            <td>{{ $p->date_paiement->format('d/m/Y') }}</td>
+                                            <td>{{ $p->mode_paiement ?? '—' }}</td>
+                                            <td>{{ $p->notes ?? '—' }}</td>
+                                            <td class="text-end fw-bold text-success">{{ number_format($p->montant, 0, ',', ' ') }} FCFA</td>
+                                            <td class="text-end text-primary">{{ number_format($cumul, 0, ',', ' ') }} FCFA</td>
+                                            <td class="text-center">
+                                                <a href="{{ route('achats.printPaiement', [$achat->id, $p->id]) }}"
+                                                   class="btn btn-sm btn-outline-secondary" target="_blank" title="Imprimer ce paiement">
+                                                    <i class="bi bi-printer"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <td colspan="4" class="text-end fw-bold">Total payé :</td>
+                                        <td class="text-end fw-bold text-success">{{ number_format($achat->montant_paye, 0, ',', ' ') }} FCFA</td>
+                                        <td class="text-end fw-bold {{ $achat->reste_a_payer > 0 ? 'text-danger' : 'text-success' }}">
+                                            Reste : {{ number_format($achat->reste_a_payer, 0, ',', ' ') }} FCFA
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @if($achat->statut === 'non_solde')
+    <!-- Modal Solder -->
+    <div class="modal fade" id="modalSolderAchat" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title"><i class="bi bi-cash-coin"></i> Enregistrer un paiement — {{ $achat->numero_achat }}</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form action="{{ route('achats.solder', $achat->id) }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row mb-3">
+                            <div class="col-4">
+                                <div class="p-2 rounded text-center" style="background:#e3f2fd;">
+                                    <small class="text-muted d-block" style="font-size:.75rem;">Total</small>
+                                    <strong class="text-success small">{{ number_format($achat->montant_total, 0, ',', ' ') }} FCFA</strong>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 rounded text-center" style="background:#e3f2fd;">
+                                    <small class="text-muted d-block" style="font-size:.75rem;">Déjà payé</small>
+                                    <strong class="text-primary small">{{ number_format($achat->montant_paye, 0, ',', ' ') }} FCFA</strong>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="p-2 rounded text-center" style="background:#fdecea;">
+                                    <small class="text-muted d-block" style="font-size:.75rem;">Reste</small>
+                                    <strong class="text-danger small">{{ number_format($achat->reste_a_payer, 0, ',', ' ') }} FCFA</strong>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Montant du paiement <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control form-control-lg" name="montant"
+                                value="{{ $achat->reste_a_payer }}" step="0.01" min="0.01" max="{{ $achat->reste_a_payer }}" required>
+                            <div class="form-text">Maximum : {{ number_format($achat->reste_a_payer, 0, ',', ' ') }} FCFA</div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Date du paiement <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" name="date_paiement" value="{{ date('Y-m-d') }}" required>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label fw-bold">Mode de paiement</label>
+                                <select class="form-select" name="mode_paiement">
+                                    <option value="">— Sélectionner —</option>
+                                    <option>Espèces</option>
+                                    <option>Chèque</option>
+                                    <option>Virement bancaire</option>
+                                    <option>Mobile Money</option>
+                                    <option>Carte bancaire</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label fw-bold">Notes</label>
+                            <textarea class="form-control" name="notes" rows="2" placeholder="Observation facultative..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-success"><i class="bi bi-check-circle"></i> Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endif
+@endsection
