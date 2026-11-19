@@ -54,6 +54,8 @@
         }
 
         .inv-header,
+        .print-phones,
+        .print-magasin,
         .inv-watermark,
         .inv-party,
         .inv-status-pill,
@@ -219,6 +221,16 @@
         display: flex;
         flex-wrap: wrap;
         gap: 3px 12px;
+    }
+
+    .print-phones,
+    .print-magasin {
+        flex-basis: 100%;
+        margin-top: 2px;
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        color: #fff;
     }
 
     .inv-doc-block {

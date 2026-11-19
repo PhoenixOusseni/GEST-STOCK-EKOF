@@ -241,6 +241,8 @@
             <h1>TABLEAU DES IMMOBILISATIONS ET DES AMORTISSEMENTS</h1>
             <div class="info">Document généré le {{ date('d/m/Y à H:i') }}</div>
             <div class="info"><strong>Exercice :</strong> {{ date('Y') }}</div>
+            @include('partials.print-phones')
+            @include('partials.print-magasin')
         </div>
     </div>
 

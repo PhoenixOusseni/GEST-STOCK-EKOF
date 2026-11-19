@@ -38,6 +38,8 @@
         }
 
         .header,
+        .print-phones,
+        .print-magasin,
         .header::before,
         .header::after,
         .header-receipt,
@@ -189,6 +191,15 @@
     .header-contact-item::before {
         content: "•";
         opacity: 0.6;
+    }
+
+    .print-phones,
+    .print-magasin {
+        margin-top: 4px;
+        font-size: 11.5px;
+        font-weight: 700;
+        color: #fff;
+        letter-spacing: 0.01em;
     }
 
     .header-receipt {

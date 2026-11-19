@@ -34,11 +34,6 @@
                     <div class="header-subtitle">{{ $entete->sous_titre }}</div>
                 @endif
                 <div class="header-contact">
-                    @if ($entete && $entete->telephone)
-                        <div class="header-contact-item">
-                            <span>☎ {{ $entete->telephone }}</span>
-                        </div>
-                    @endif
                     @if ($entete && $entete->email)
                         <div class="header-contact-item">
                             <span>✉ {{ $entete->email }}</span>
@@ -50,6 +45,8 @@
                         </div>
                     @endif
                 </div>
+                @include('partials.print-phones')
+                @include('partials.print-magasin', ['magasinImpression' => trim(($transfert->depotSource->designation ?? '') . (($transfert->depotDestination->designation ?? '') !== '' ? ' → ' . $transfert->depotDestination->designation : ''))])
             </div>
 
             <div class="header-receipt">

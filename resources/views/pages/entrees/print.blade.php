@@ -18,6 +18,7 @@
     <div class="inv-page">
         @php
             $entete = \App\Models\Entete::first();
+            $magasin = $entree->details->map(fn ($detail) => $detail->depot->designation ?? null)->filter()->unique()->join(', ');
         @endphp
 
         @include('partials.invoice-header', [

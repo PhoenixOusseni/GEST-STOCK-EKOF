@@ -26,12 +26,11 @@
                     @if ($entete && $entete->adresse)
                         <span>{{ $entete->adresse }}</span>
                     @endif
-                    @if ($entete && $entete->telephone)
-                        <span>Tél. {{ $entete->telephone }}</span>
-                    @endif
                     @if ($entete && $entete->email)
                         <span>{{ $entete->email }}</span>
                     @endif
+                    @include('partials.print-phones')
+                    @include('partials.print-magasin')
                 </div>
             </div>
         </div>

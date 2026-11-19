@@ -127,9 +127,6 @@
                     <div class="header-subtitle">{{ $entete->sous_titre }}</div>
                 @endif
                 <div class="header-contact">
-                    @if ($entete && $entete->telephone)
-                        <div class="header-contact-item"><span>&#9990; {{ $entete->telephone }}</span></div>
-                    @endif
                     @if ($entete && $entete->email)
                         <div class="header-contact-item"><span>&#9993; {{ $entete->email }}</span></div>
                     @endif
@@ -137,6 +134,8 @@
                         <div class="header-contact-item"><span>&#128205; {{ $entete->adresse }}</span></div>
                     @endif
                 </div>
+                @include('partials.print-phones')
+                @include('partials.print-magasin')
             </div>
 
             <div class="header-receipt">
