@@ -20,7 +20,7 @@
 
     <div class="mb-4" style="background: rgb(232, 240, 243); padding: 15px; border-radius: 5px;">
         <h6 class="mb-3"><i class="bi bi-info-circle"></i> Informations du bon de commande</h6>
-        <p class="small text-muted">Les informations sont les mêmes que sur une facture. Le stock du magazin est affiché, mais il n'est pas diminué tant que le bon n'est pas transformé en facture.</p>
+        <p class="small text-muted">Un article sans stock bloque le bon. S'il a du stock, le bon est enregistré et le stock du magazin reste intact.</p>
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label for="depot_id" class="small fw-semibold">Magazin <span class="text-danger">*</span></label>

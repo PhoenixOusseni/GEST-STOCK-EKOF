@@ -12,6 +12,7 @@
                         <li class="breadcrumb-item active">Détails</li>
                     </ol>
                 </nav>
+                @include('partials.doc-auteur', ['nom' => $transfert->nomAuteur()])
             </div>
             <div class="d-flex gap-2">
                 <a href="{{ route('gestions_transferts.index') }}" class="btn btn-primary btn-sm">

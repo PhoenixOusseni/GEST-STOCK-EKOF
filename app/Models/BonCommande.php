@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\NoteAuteur;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class BonCommande extends Model
 {
-    use HasFactory;
+    use HasFactory, NoteAuteur;
 
     protected $table = 'bons_commandes';
 

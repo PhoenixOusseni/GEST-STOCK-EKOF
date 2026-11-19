@@ -23,6 +23,7 @@ use App\Http\Controllers\AchatController;
 use App\Http\Controllers\DecaissementController;
 use App\Http\Controllers\DepenseController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ActiviteController;
 
 
 Route::get('/', [PageController::class, 'auth'])->name('login');
@@ -41,6 +42,7 @@ Route::middleware(['auth', 'role.acces'])->group(function () {
 
     Route::middleware('depot.actif')->group(function () {
     Route::get('dashboard', [PageController::class, 'dashboard'])->name('dashboard');
+    Route::get('logs', [ActiviteController::class, 'index'])->name('logs.index');
 
     // Gestion des entêtes
     Route::get('entetes/infos_societe', [EnteteController::class, 'index'])->name('entetes.index');
@@ -95,6 +97,10 @@ Route::middleware(['auth', 'role.acces'])->group(function () {
     Route::resource('achats/gestions_achats', AchatController::class);
     Route::get('achats/print/{id}', [AchatController::class, 'printAchat'])->name('achats.print');
 
+
+    // Stock réel des articles du magazin sélectionné
+    Route::get('stocks/articles/impression', [StockController::class, 'printArticles'])->name('stocks.articles.print');
+    Route::get('stocks/articles', [StockController::class, 'articles'])->name('stocks.articles');
 
     // Gestion des stocks (Consultation et ajustements)
     Route::resource('stocks/gestions_stocks', StockController::class);

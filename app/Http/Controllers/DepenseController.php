@@ -161,6 +161,7 @@ class DepenseController extends Controller
                 $depense->categorie,
                 $depense->mode_paiement ?: '—',
                 $depense->reference ?: '—',
+                $depense->nomAuteur(),
                 number_format($depense->montant, 0, ',', ' '),
             ];
         });
@@ -186,7 +187,8 @@ class DepenseController extends Controller
                 ['label' => 'Catégorie', 'width' => '16%'],
                 ['label' => 'Mode', 'width' => '14%'],
                 ['label' => 'Référence', 'width' => '12%'],
-                ['label' => 'Montant', 'class' => 'inv-num', 'width' => '14%'],
+                ['label' => 'Saisi par', 'width' => '14%'],
+                ['label' => 'Montant', 'class' => 'inv-num', 'width' => '12%'],
             ],
             'rows' => $rows,
             'totals' => [
@@ -198,7 +200,7 @@ class DepenseController extends Controller
 
     private function depensesDuDepot()
     {
-        return Depense::query()->where('depot_id', DepotActif::id());
+        return Depense::query()->with('auteur')->where('depot_id', DepotActif::id());
     }
 
     private function trouver(string $id): Depense

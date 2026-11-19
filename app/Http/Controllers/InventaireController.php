@@ -9,6 +9,7 @@ use App\Models\Article;
 use App\Models\Stock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Support\Acces;
 use App\Support\DepotActif;
 use Illuminate\Support\Facades\Auth;
 
@@ -114,14 +115,30 @@ class InventaireController extends Controller
 
     public function destroy(String $id)
     {
+        if (! Acces::estAdmin()) {
+            abort(403);
+        }
+
+        $inventaire = DepotActif::inventaires()->with('details')->findOrFail($id);
+
+        DB::beginTransaction();
         try {
-            $inventaire = Inventaire::findOrFail($id);
-            if ($inventaire->statut == 'valide') {
-                return redirect()->back()->with('error', 'Impossible de supprimer un inventaire validé.');
+            if ($inventaire->statut === 'valide') {
+                foreach ($inventaire->details as $detail) {
+                    $stock = Stock::where('article_id', $detail->article_id)
+                        ->where('depot_id', $inventaire->depot_id)
+                        ->first();
+                    if ($stock) {
+                        $stock->increment('quantite_disponible', $detail->quantite_theorique - $detail->quantite_physique);
+                    }
+                }
             }
             $inventaire->delete();
+            DB::commit();
+
             return redirect()->route('gestions_inventaires.index')->with('success', 'Inventaire supprimé.');
         } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->back()->with('error', 'Erreur: ' . $e->getMessage());
         }
     }

@@ -12,6 +12,7 @@
                         <li class="breadcrumb-item active">{{ $achat->numero_achat }}</li>
                     </ol>
                 </nav>
+                @include('partials.doc-auteur', ['nom' => $achat->nomAuteur()])
             </div>
             <div class="d-flex gap-2">
                 <a href="{{ route('gestions_achats.index') }}" class="btn btn-primary btn-sm">
@@ -28,14 +29,16 @@
                 <a href="{{ route('achats.print', $achat->id) }}" class="btn btn-secondary btn-sm" target="_blank">
                     <i class="bi bi-printer"></i> Imprimer
                 </a>
+                @if ($achat->statut !== 'solde' || \App\Support\Acces::estAdmin())
                 <form action="{{ route('gestions_achats.destroy', $achat->id) }}" method="POST" class="d-inline"
-                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet achat ? Le stock sera annulé.');">
+                    onsubmit="return confirm('Supprimer cet achat ? Le stock sera annulé.');">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger btn-sm">
                         <i class="bi bi-trash"></i> Supprimer
                     </button>
                 </form>
+                @endif
             </div>
         </div>
     </div>

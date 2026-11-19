@@ -23,11 +23,10 @@
 
         <!-- En-tête personnalisé avec infos de la table entete -->
         <div class="header">
-            @if ($entete && $entete->logo)
-                <div class="header-logo">
-                    <img src="{{ asset('storage/' . $entete->logo) }}" alt="Logo">
-                </div>
-            @endif
+            @include('partials.print-watermark')
+            <div class="header-logo">
+                <img src="{{ asset('images/logo.png') }}" alt="EKDF eau Bisimilah">
+            </div>
 
             <div class="header-info">
                 <div class="header-title">{{ $entete->titre ?? 'SAFRECO-GSM' }}</div>
@@ -58,6 +57,7 @@
                 <div class="header-receipt-id">#{{ str_pad($transfert->id, 6, '0', STR_PAD_LEFT) }}</div>
                 <div class="receipt-date">{{ \Carbon\Carbon::parse($transfert->created_at)->format('d/m/Y à H:i') }}
                 </div>
+                <div class="receipt-author">Par {{ $transfert->nomAuteur() }}</div>
             </div>
         </div>
 
@@ -180,8 +180,7 @@
         <!-- Pied de page -->
         <div class="footer">
             <p>
-                Ce bon de transfert a été généré le {{ now()->format('d/m/Y à H:i:s') }} par le système de gestion
-                SAFRECO-GSM.
+                Ce bon de transfert a été généré le {{ now()->format('d/m/Y à H:i:s') }} — {{ $entete->titre ?? 'EKDF' }}.
             </p>
             <p style="margin-top: 10px;">
                 <strong>Merci de conserver ce bon à titre de justificatif.</strong>

@@ -77,7 +77,6 @@ class PageController extends Controller
     public function dashboard()
     {
         $depot = DepotActif::current();
-        $depotId = $depot->id;
 
         $ventes_periodes = [
             'jour' => DepotActif::sommeVentes(now()->startOfDay(), now()->endOfDay()),
@@ -100,91 +99,22 @@ class PageController extends Controller
             'total_utilisateurs' => User::count(),
         ];
 
-        // Ventes du mois
         $ventes_mois = $ventes_periodes['mois'];
-
-        // Achats du mois
         $achats_mois = DepotActif::sommeAchats(Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth());
+        $depenses_mois = Depense::where('date_depense', '>=', Carbon::now()->startOfMonth())->sum('montant');
 
-        // Encaissements du mois
-        $encaissements_mois = DepotActif::encaissements()->where('created_at', '>=', Carbon::now()->startOfMonth())
-            ->sum('montant_encaisse');
-
-        // Décaissements du mois
-        $decaissements_mois = DepotActif::decaissements()->where('created_at', '>=', Carbon::now()->startOfMonth())
-            ->sum('montant_decaisse');
-
-        // Dépenses du mois
-        $depenses_mois = Depense::where('date_depense', '>=', Carbon::now()->startOfMonth())
-            ->sum('montant');
-
-        // Reste à solder des ventes et des achats
-        $reste_a_solder_ventes = DepotActif::ventes()->sum('reste_a_payer');
-        $reste_a_solder_achats = DepotActif::achats()->sum('reste_a_payer');
-        $count_ventes_non_soldees = DepotActif::ventes()->where('reste_a_payer', '>', 0)->count();
+        $ventesNonSoldees = DepotActif::ventes()->where('reste_a_payer', '>', 0);
+        $reste_a_solder_ventes = (clone $ventesNonSoldees)->sum('reste_a_payer');
+        $count_ventes_non_soldees = (clone $ventesNonSoldees)->count();
+        $reste_a_solder_achats = DepotActif::achats()->where('reste_a_payer', '>', 0)->sum('reste_a_payer');
         $count_achats_non_soldes = DepotActif::achats()->where('reste_a_payer', '>', 0)->count();
 
-        // Top 5 articles vendus
-        $top_articles_ventes = \DB::table('ventes_details')
-            ->where('ventes_details.depot_id', $depotId)
-            ->join('articles', 'ventes_details.article_id', '=', 'articles.id')
-            ->select('articles.designation', \DB::raw('SUM(ventes_details.quantite) as total_quantite'),
-                     \DB::raw('SUM(ventes_details.prix_total) as total_montant'))
-            ->groupBy('articles.id', 'articles.designation')
-            ->orderByDesc('total_quantite')
-            ->limit(5)
+        $ventes_non_soldees = (clone $ventesNonSoldees)
+            ->with('client')
+            ->orderBy('date_vente')
+            ->orderBy('id')
             ->get();
 
-        // Top 5 articles achetés - basé sur le montant des achats
-        // Puisque achat_details n'a pas de structure complète, on utilise une approche alternative
-        // On récupère juste les achats les plus importants
-        $top_articles_achats = DepotActif::achats()->orderByDesc('montant_total')
-            ->with(['fournisseur'])
-            ->limit(5)
-            ->get()
-            ->map(function($achat) {
-                return (object)[
-                    'designation' => $achat->designation ?: 'Achat #' . $achat->numero_achat,
-                    'total_quantite' => 1, // Nombre d'achats
-                    'total_montant' => $achat->montant_total,
-                ];
-            });
-
-        // Articles en stock faible
-        $stock_faible = DepotActif::stocks()->with(['article', 'depot'])
-            ->whereRaw('quantite_disponible < quantite_minimale')
-            ->orderBy('quantite_disponible')
-            ->limit(10)
-            ->get();
-
-        // Ventes récentes
-        $ventes_recentes = DepotActif::ventes()->with(['client'])
-            ->orderBy('created_at', 'desc')
-            ->limit(5)
-            ->get();
-
-        // Achats récents
-        $achats_recents = DepotActif::achats()->with(['fournisseur'])
-            ->orderBy('created_at', 'desc')
-            ->limit(5)
-            ->get();
-
-        // Dépenses récentes
-        $depenses_recentes = Depense::orderBy('created_at', 'desc')
-            ->limit(5)
-            ->get();
-
-        // Ventes aujourd'hui
-        $ventes_aujourd_hui = $ventes_periodes['jour_count'];
-
-        // Achats aujourd'hui
-        $achats_aujourd_hui = DepotActif::achats()->whereDate('date_achat', Carbon::today())->count();
-
-        // Encaissements aujourd'hui
-        $encaissements_aujourd_hui = DepotActif::encaissements()->where('created_at', '>=', Carbon::today())
-            ->sum('montant_encaisse');
-
-        // Préparer les statistiques totales
         $total_stats = [
             'ventes' => $stats['total_ventes'],
             'achats' => $stats['total_achats'],
@@ -192,93 +122,21 @@ class PageController extends Controller
             'fournisseurs' => $stats['total_fournisseurs'],
             'articles' => $stats['total_articles'],
             'utilisateurs' => $stats['total_utilisateurs'],
-            'encaissements' => DepotActif::encaissements()->count(),
-            'decaissements' => DepotActif::decaissements()->count(),
             'depenses' => Depense::count(),
-        ];
-
-        // Statistiques d'aujourd'hui
-        $today_stats = [
-            'ventes_count' => $ventes_aujourd_hui,
-            'achats_count' => $achats_aujourd_hui,
-            'encaissements' => $encaissements_aujourd_hui,
-        ];
-
-        // Banques avec leurs soldes (encaissements, décaissements, reste à recouvrir)
-        $banques_soldes = Banque::orderBy('designation')->get()->map(function ($banque) use ($depotId) {
-            $encaissements = $banque->encaissements()->whereHas('vente.details', fn ($q) => $q->where('depot_id', $depotId));
-            $decaissements = $banque->decaissements()->whereHas('achat.details', fn ($q) => $q->where('depot_id', $depotId));
-            return [
-                'id'              => $banque->id,
-                'designation'     => $banque->designation,
-                'total_encaisse'  => $encaissements->sum('montant_encaisse'),
-                'total_decaisse'  => $decaissements->sum('montant_decaisse'),
-                'solde_recouvrir' => $encaissements->sum('reste'),
-            ];
-        });
-
-        // Caisses avec leurs soldes
-        $caisses_soldes = Caisse::orderBy('designation')->get()->map(function ($caisse) use ($depotId) {
-            $encaissements = $caisse->encaissements()->whereHas('vente.details', fn ($q) => $q->where('depot_id', $depotId));
-            $decaissements = $caisse->decaissements()->whereHas('achat.details', fn ($q) => $q->where('depot_id', $depotId));
-            return [
-                'id'              => $caisse->id,
-                'designation'     => $caisse->designation,
-                'total_encaisse'  => $encaissements->sum('montant_encaisse'),
-                'total_decaisse'  => $decaissements->sum('montant_decaisse'),
-                'solde_recouvrir' => $encaissements->sum('reste'),
-            ];
-        });
-
-        // Séries mensuelles (12 derniers mois) pour les graphiques
-        $chart_labels = [];
-        $chart_ventes = [];
-        $chart_achats = [];
-        $chart_encaissements = [];
-        $chart_decaissements = [];
-        for ($i = 11; $i >= 0; $i--) {
-            $date  = Carbon::now()->startOfMonth()->subMonths($i);
-            $start = $date->copy()->startOfMonth();
-            $end   = $date->copy()->endOfMonth();
-
-            $chart_labels[]        = $date->translatedFormat('M Y');
-            $chart_ventes[]        = DepotActif::sommeVentes($start, $end);
-            $chart_achats[]        = DepotActif::sommeAchats($start, $end);
-            $chart_encaissements[] = (float) DepotActif::encaissements()->whereBetween('created_at', [$start, $end])->sum('montant_encaisse');
-            $chart_decaissements[] = (float) DepotActif::decaissements()->whereBetween('created_at', [$start, $end])->sum('montant_decaisse');
-        }
-
-        $chart_data = [
-            'labels'        => $chart_labels,
-            'ventes'        => $chart_ventes,
-            'achats'        => $chart_achats,
-            'encaissements' => $chart_encaissements,
-            'decaissements' => $chart_decaissements,
         ];
 
         return view('pages.dashboard', compact(
             'depot',
             'ventes_periodes',
             'total_stats',
-            'today_stats',
             'ventes_mois',
             'achats_mois',
-            'encaissements_mois',
-            'decaissements_mois',
             'depenses_mois',
             'reste_a_solder_ventes',
             'reste_a_solder_achats',
             'count_ventes_non_soldees',
             'count_achats_non_soldes',
-            'top_articles_ventes',
-            'top_articles_achats',
-            'stock_faible',
-            'ventes_recentes',
-            'achats_recents',
-            'depenses_recentes',
-            'banques_soldes',
-            'caisses_soldes',
-            'chart_data'
+            'ventes_non_soldees'
         ));
     }
 

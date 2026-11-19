@@ -142,6 +142,16 @@
                                                         <a href="{{ route('gestions_achats.show', $achat->id) }}" class="btn btn-sm btn-success" title="Voir">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
+                                                        @if (\App\Support\Acces::estAdmin())
+                                                        <form action="{{ route('gestions_achats.destroy', $achat->id) }}" method="POST" class="d-inline"
+                                                            onsubmit="return confirm('Supprimer cet achat ? Le stock sera annulé.');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-sm btn-danger" title="Supprimer">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                        @endif
                                                     </div>
                                                 </td>
                                             </tr>

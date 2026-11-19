@@ -13,6 +13,7 @@
                         <li class="breadcrumb-item active">Details</li>
                     </ol>
                 </nav>
+                @include('partials.doc-auteur', ['nom' => $encaissement->nomAuteur()])
             </div>
             <div class="d-flex gap-2">
                 <a href="{{ route('gestions_encaissements.index') }}" class="btn btn-primary btn-sm">

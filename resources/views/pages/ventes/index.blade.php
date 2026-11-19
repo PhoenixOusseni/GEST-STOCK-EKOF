@@ -35,7 +35,7 @@
 
     <section class="section">
         <div class="row">
-            <div class="col-lg-10">
+            <div class="col-lg-12">
                 <!-- Filtres -->
                 <div class="card mb-3">
                     <div class="card-body">
@@ -164,6 +164,16 @@
                                                         <a href="{{ route('gestions_ventes.show', $vente) }}" class="btn btn-sm btn-success" title="Voir">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
+                                                        @if (\App\Support\Acces::estAdmin())
+                                                        <form action="{{ route('gestions_ventes.destroy', $vente) }}" method="POST" class="d-inline"
+                                                            onsubmit="return confirm('Supprimer cette vente ? Les quantités seront remises en stock.');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-sm btn-danger" title="Supprimer">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                        @endif
                                                         @if($vente->statut === 'non_solde')
                                                             @if (\App\Support\Acces::peutModifier('facture'))
                                                             <a href="{{ route('gestions_ventes.edit', $vente) }}" class="btn btn-sm btn-warning" title="Modifier">
@@ -192,52 +202,6 @@
                                 {{ $ventes->links() }}
                             </div>
                         @endif
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2">
-                <!-- Stat : Total ventes -->
-                <div class="card mb-3">
-                    <div class="card-body text-center">
-                        <div class="text-primary mb-1"><i class="bi bi-receipt fs-3"></i></div>
-                        <h6 class="card-title text-muted small mb-1">Total Ventes</h6>
-                        <h4 class="fw-bold mb-0">{{ $stats['total_ventes'] }}</h4>
-                    </div>
-                </div>
-
-                <!-- Stat : Chiffre d'affaires total -->
-                <div class="card mb-3">
-                    <div class="card-body text-center">
-                        <div class="text-success mb-1"><i class="bi bi-cash-stack fs-3"></i></div>
-                        <h6 class="card-title text-muted small mb-1">CA Total</h6>
-                        <h6 class="fw-bold mb-0">{{ number_format($stats['montant_total'], 0, ',', ' ') }}</h6>
-                    </div>
-                </div>
-
-                <!-- Stat : Ventes du mois -->
-                <div class="card mb-3">
-                    <div class="card-body text-center">
-                        <div class="text-warning mb-1"><i class="bi bi-calendar-month fs-3"></i></div>
-                        <h6 class="card-title text-muted small mb-1">Ventes ce mois</h6>
-                        <h4 class="fw-bold mb-0">{{ $stats['ventes_mois'] }}</h4>
-                    </div>
-                </div>
-
-                <!-- Stat : CA du mois -->
-                <div class="card mb-3">
-                    <div class="card-body text-center">
-                        <div class="text-info mb-1"><i class="bi bi-graph-up-arrow fs-3"></i></div>
-                        <h6 class="card-title text-muted small mb-1">CA ce mois</h6>
-                        <h6 class="fw-bold mb-0">{{ number_format($stats['montant_mois'], 0, ',', ' ') }}</h6>
-                    </div>
-                </div>
-
-                <!-- Stat : Clients actifs -->
-                <div class="card mb-3">
-                    <div class="card-body text-center">
-                        <div class="text-secondary mb-1"><i class="bi bi-people fs-3"></i></div>
-                        <h6 class="card-title text-muted small mb-1">Clients actifs</h6>
-                        <h4 class="fw-bold mb-0">{{ $stats['nb_clients_actifs'] }}</h4>
                     </div>
                 </div>
             </div>

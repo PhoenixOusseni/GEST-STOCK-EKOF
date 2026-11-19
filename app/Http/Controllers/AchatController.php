@@ -10,6 +10,7 @@ use App\Models\Depot;
 use App\Models\Fournisseur;
 use App\Models\Stock;
 use Illuminate\Http\Request;
+use App\Support\Acces;
 use App\Support\DepotActif;
 use Illuminate\Support\Facades\DB;
 
@@ -213,16 +214,24 @@ class AchatController extends Controller
 
     public function destroy(String $id)
     {
-        $achat = Achat::with('details')->findOrFail($id);
-        if ($achat->statut === 'solde') {
+        $achat = DepotActif::achats()->with(['details', 'decaissements.banque', 'decaissements.caisse'])->findOrFail($id);
+        if ($achat->statut === 'solde' && ! Acces::estAdmin()) {
             return redirect()->route('gestions_achats.index')
-                ->with('error', 'Impossible de supprimer un achat soldé.');
+                ->with('error', 'Seul l\'administrateur peut supprimer un achat soldé.');
         }
         DB::beginTransaction();
         try {
             foreach ($achat->details as $detail) {
                 $stock = Stock::where('article_id', $detail->article_id)->where('depot_id', $detail->depot_id)->first();
                 if ($stock) $stock->decrement('quantite_disponible', $detail->quantite);
+            }
+            foreach ($achat->decaissements as $decaissement) {
+                if ($decaissement->banque) {
+                    $decaissement->banque->increment('solde', $decaissement->montant_decaisse);
+                }
+                if ($decaissement->caisse) {
+                    $decaissement->caisse->increment('solde', $decaissement->montant_decaisse);
+                }
             }
             $achat->delete();
             DB::commit();

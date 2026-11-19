@@ -24,6 +24,7 @@
             'docLabel' => "Bon d'Entrée",
             'docNumber' => '#' . str_pad($entree->id, 6, '0', STR_PAD_LEFT),
             'docDate' => \Carbon\Carbon::parse($entree->created_at)->format('d/m/Y à H:i'),
+            'auteur' => $entree->nomAuteur(),
         ])
 
         <!-- Fournisseur -->

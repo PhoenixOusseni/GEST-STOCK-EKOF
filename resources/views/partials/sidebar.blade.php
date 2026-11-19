@@ -15,8 +15,9 @@
         [
             'label' => 'Stock',
             'icon' => 'bi-box-seam',
-            'open' => $navActive('gestions_entrees.*', 'gestions_sorties.*', 'gestions_transferts.*', 'gestions_inventaires.*', 'entrees.*', 'sorties.*', 'transferts.*'),
+            'open' => $navActive('stocks.articles', 'stocks.articles.print', 'gestions_entrees.*', 'gestions_sorties.*', 'gestions_transferts.*', 'gestions_inventaires.*', 'entrees.*', 'sorties.*', 'transferts.*'),
             'items' => [
+                ['route' => 'stocks.articles', 'icon' => 'bi-bag', 'label' => 'Articles', 'match' => ['stocks.articles', 'stocks.articles.print']],
                 ['route' => 'gestions_entrees.index', 'icon' => 'bi-box-arrow-in-down', 'label' => 'Entrées', 'match' => ['gestions_entrees.*', 'entrees.*']],
                 ['route' => 'gestions_sorties.index', 'icon' => 'bi-box-arrow-up', 'label' => 'Sorties', 'match' => ['gestions_sorties.*', 'sorties.*']],
                 ['route' => 'gestions_transferts.index', 'icon' => 'bi-arrow-left-right', 'label' => 'Transferts', 'match' => ['gestions_transferts.*', 'transferts.*']],
@@ -65,7 +66,7 @@
 <aside id="appSidebar" class="app-sidebar" aria-label="Navigation principale">
     <a href="{{ $depotActif ? route('dashboard') : route('depots.accueil') }}" class="sidebar-brand">
         <span class="brand-mark">
-            <img src="{{ asset('images/logo_laafi_tiim.jpeg') }}" alt="">
+            <img src="{{ asset('images/logo.png') }}" alt="EKDF eau Bisimilah">
         </span>
         <span class="brand-text">
             <strong>Market Place</strong>
@@ -116,6 +117,16 @@
                 </ul>
             </div>
         @endforeach
+
+        @if (\App\Support\Acces::estAdmin())
+        <a href="{{ route('logs.index') }}"
+           class="nav-link {{ $navActive('logs.index') ? 'is-active' : '' }}"
+           data-section="Logs"
+           @if($navActive('logs.index')) aria-current="page" @endif>
+            <i class="bi bi-journal-text"></i>
+            <span class="nav-label">Logs</span>
+        </a>
+        @endif
     </nav>
 
     <div class="sidebar-foot">

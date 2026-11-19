@@ -49,4 +49,11 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Depot::class);
     }
+
+    public function nomComplet(): string
+    {
+        $nom = trim(($this->prenom ?? '') . ' ' . ($this->nom ?? ''));
+
+        return $nom !== '' ? $nom : 'Utilisateur';
+    }
 }

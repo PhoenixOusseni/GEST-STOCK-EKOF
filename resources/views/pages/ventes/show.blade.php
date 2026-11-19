@@ -12,6 +12,7 @@
                         <li class="breadcrumb-item active">{{ $vente->numero_vente }}</li>
                     </ol>
                 </nav>
+                @include('partials.doc-auteur', ['nom' => $vente->nomAuteur()])
             </div>
             <div class="d-flex gap-2">
                 <a href="{{ route('gestions_ventes.index') }}" class="btn btn-primary btn-sm">
@@ -30,9 +31,9 @@
                 <a href="#" class="btn btn-secondary btn-sm" onclick="window.open('{{ route('ventes.print', $vente->id) }}', '_blank')">
                     <i class="bi bi-printer"></i> Imprimer
                 </a>
-                @if (\App\Support\Acces::peutModifier('facture'))
+                @if (\App\Support\Acces::estAdmin())
                 <form action="{{ route('gestions_ventes.destroy', $vente->id) }}" method="POST" class="d-inline"
-                    onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette vente ?');">
+                    onsubmit="return confirm('Supprimer cette vente ? Les quantités seront remises en stock.');">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger btn-sm">

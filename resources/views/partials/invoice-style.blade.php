@@ -1,6 +1,5 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SAFRECO | Document</title>
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
 <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
 <style>
@@ -54,11 +53,14 @@
             display: table-header-group;
         }
 
-        .inv-accent-bar,
-        .inv-letter-rule,
+        .inv-header,
+        .inv-watermark,
         .inv-party,
         .inv-status-pill,
-        .inv-totals-grand {
+        .inv-totals-grand,
+        .inv-doc-block,
+        .inv-table thead th,
+        .inv-logo {
             -webkit-print-color-adjust: exact;
             print-color-adjust: exact;
         }
@@ -121,18 +123,50 @@
         max-width: 1100px;
     }
 
-    .inv-accent-bar {
-        height: 8px;
-        background: linear-gradient(#0c3d78, #0c3d78) top / 100% 5px no-repeat,
-            linear-gradient(#b42318, #b42318) bottom / 100% 3px no-repeat;
+    .inv-header {
+        position: relative;
+        overflow: hidden;
+        color: #fff;
+        background:
+            radial-gradient(ellipse at 100% 0%, rgba(255, 255, 255, 0.16), transparent 42%),
+            linear-gradient(118deg, #06182f 0%, #0a3268 46%, #14508f 100%);
+        border-bottom: 4px solid #b42318;
     }
 
-    .inv-header {
+    .inv-header::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(-28deg, transparent, transparent 13px, rgba(255, 255, 255, 0.045) 13px, rgba(255, 255, 255, 0.045) 14px);
+        pointer-events: none;
+    }
+
+    .inv-watermark {
+        position: absolute;
+        right: 172px;
+        top: 50%;
+        width: 196px;
+        height: 74px;
+        overflow: hidden;
+        transform: translateY(-50%);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .inv-watermark svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+    .inv-header-inner {
+        position: relative;
+        z-index: 1;
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
-        gap: 28px;
-        padding: 28px 40px 18px;
+        align-items: center;
+        gap: 18px;
+        padding: 18px 28px 16px;
     }
 
     .inv-brand-block {
@@ -143,21 +177,23 @@
     }
 
     .inv-logo {
-        width: 62px;
-        height: 62px;
-        border: 1px solid var(--inv-line);
+        width: 148px;
+        height: 52px;
+        border: none;
         overflow: hidden;
         flex-shrink: 0;
-        background: var(--inv-wash);
+        background: #fff;
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 4px 8px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
     }
 
     .inv-logo img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
     }
 
     .inv-company-name {
@@ -165,79 +201,94 @@
         font-size: 22px;
         font-weight: 700;
         letter-spacing: 0.01em;
-        color: var(--inv-navy-deep);
-        line-height: 1.15;
+        color: #fff;
+        line-height: 1.1;
     }
 
     .inv-company-sub {
-        margin-top: 3px;
+        margin-top: 2px;
         font-size: 12px;
         font-weight: 600;
-        color: var(--inv-navy);
+        color: #f0c7c3;
     }
 
     .inv-company-contact {
-        margin-top: 8px;
-        font-size: 11.5px;
-        color: var(--inv-muted);
+        margin-top: 6px;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.82);
         display: flex;
         flex-wrap: wrap;
-        gap: 4px 12px;
+        gap: 3px 12px;
     }
 
     .inv-doc-block {
-        text-align: right;
-        flex-shrink: 0;
-        min-width: 190px;
+        text-align: left;
+        flex: 0 0 auto;
+        width: max-content;
+        max-width: 156px;
+        background: #fff;
+        color: var(--inv-navy-deep);
+        padding: 7px 10px 8px;
+        border-left: 3px solid #b42318;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
     }
 
     .inv-doc-kicker {
-        font-size: 10px;
+        font-size: 9px;
         font-weight: 700;
-        letter-spacing: 0.16em;
+        letter-spacing: 0.14em;
         text-transform: uppercase;
-        color: var(--inv-red);
+        color: #b42318;
     }
 
     .inv-doc-title {
-        margin-top: 2px;
+        margin-top: 1px;
         font-family: "Source Serif 4", Georgia, serif;
-        font-size: 26px;
+        font-size: 16px;
         font-weight: 700;
-        line-height: 1.05;
+        line-height: 1.1;
         letter-spacing: -0.02em;
-        color: var(--inv-navy);
+        color: #08284f;
     }
 
     .inv-doc-number {
-        margin-top: 10px;
-        font-size: 13px;
+        margin-top: 4px;
+        font-size: 11px;
         font-weight: 700;
-        color: var(--inv-ink);
+        line-height: 1.25;
+        color: #08284f;
+        overflow-wrap: anywhere;
     }
 
     .inv-doc-number span {
         font-weight: 600;
-        color: var(--inv-muted);
+        color: #5d6b80;
         margin-right: 4px;
     }
 
     .inv-doc-date {
-        margin-top: 2px;
-        font-size: 12px;
-        color: var(--inv-muted);
+        margin-top: 1px;
+        font-size: 11px;
+        color: #5d6b80;
+    }
+
+    .inv-doc-author {
+        margin-top: 4px;
+        font-size: 10px;
+        line-height: 1.25;
+        color: #5d6b80;
     }
 
     .inv-status-pill {
-        margin-top: 10px;
+        margin-top: 6px;
         display: inline-block;
-        font-size: 10.5px;
+        font-size: 10px;
         font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        padding: 4px 10px;
+        padding: 2px 8px;
         border: 1px solid currentColor;
-        background: #fff;
+        background: #f4f7fb;
     }
 
     .inv-status-paid {
@@ -246,13 +297,6 @@
 
     .inv-status-partial {
         color: var(--inv-red);
-    }
-
-    .inv-letter-rule {
-        margin: 0 40px;
-        border-top: 2px solid var(--inv-navy);
-        border-bottom: 1px solid var(--inv-red);
-        height: 3px;
     }
 
     .inv-parties {
@@ -348,10 +392,15 @@
         font-weight: 700;
         letter-spacing: 0.08em;
         text-transform: uppercase;
-        color: var(--inv-navy);
-        background: transparent;
-        padding: 0 8px 8px;
-        border-bottom: 1.5px solid var(--inv-navy);
+        color: #fff;
+        background: var(--inv-navy);
+        padding: 8px 8px;
+        border-bottom: none;
+    }
+
+    .inv-table thead th.inv-num,
+    .inv-table thead th.inv-center {
+        color: #fff;
     }
 
     .inv-table tbody td {
@@ -474,9 +523,20 @@
         color: var(--inv-muted);
     }
 
+    .inv-signature .who {
+        margin-top: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--inv-ink, #10233f);
+    }
+
     .inv-signature .line {
-        margin-top: 48px;
+        margin-top: 36px;
         border-top: 1px solid #9aa8bc;
+    }
+
+    .inv-signature .who + .line {
+        margin-top: 28px;
     }
 
     .inv-footer {

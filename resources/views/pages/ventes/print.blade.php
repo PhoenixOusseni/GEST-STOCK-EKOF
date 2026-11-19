@@ -21,18 +21,17 @@
             $entete = \App\Models\Entete::first();
             $estSolde = ($vente->statut ?? 'non_solde') === 'solde';
             $magazins = $vente->details
-                ->map(fn ($detail) => $detail->depot->designation ?? null)
+                ->map(fn($detail) => $detail->depot->designation ?? null)
                 ->filter()
                 ->unique()
                 ->values();
-            $magasinLabel = $magazins->count() > 1 ? $magazins->join(', ') : ($magazins->first() ?? '—');
-            $fmt = fn ($montant) => number_format($montant, 0, ',', ' ') . ' FCFA';
+            $magasinLabel = $magazins->count() > 1 ? $magazins->join(', ') : $magazins->first() ?? '—';
+            $fmt = fn($montant) => number_format($montant, 0, ',', ' ') . ' FCFA';
         @endphp
 
         @include('partials.invoice-header', [
             'docLabel' => 'Facture',
             'docNumber' => $vente->numero_vente,
-            'docDate' => 'Du ' . $vente->date_vente->format('d/m/Y'),
             'statusLabel' => $estSolde ? 'Soldée' : 'Non soldée',
             'statusClass' => $estSolde ? 'inv-status-paid' : 'inv-status-partial',
         ])
@@ -40,7 +39,9 @@
         <div class="inv-parties">
             <div class="inv-party">
                 <div class="inv-party-label">Facturé à</div>
-                <div class="inv-party-name">{{ $vente->client ? ($vente->client->raison_sociale ?: $vente->client->nom) : 'Client au comptant' }}</div>
+                <div class="inv-party-name">
+                    {{ $vente->client ? ($vente->client->raison_sociale ?: $vente->client->nom) : 'Client au comptant' }}
+                </div>
                 @if ($vente->client?->code)
                     <div class="inv-party-line">Code {{ $vente->client->code }}</div>
                 @endif
@@ -58,7 +59,8 @@
                     <div class="inv-party-line">Chauffeur {{ $vente->chauffeur }}</div>
                 @endif
                 @if ($vente->type_vente)
-                    <div class="inv-party-line">{{ $vente->type_vente === 'gros' ? 'Vente en gros' : 'Vente au détail' }}</div>
+                    <div class="inv-party-line">
+                        {{ $vente->type_vente === 'gros' ? 'Vente en gros' : 'Vente au détail' }}</div>
                 @endif
             </div>
         </div>
@@ -98,7 +100,8 @@
                     <tbody>
                         @foreach ($vente->details as $index => $detail)
                             <tr>
-                                <td class="inv-center inv-muted-cell">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</td>
+                                <td class="inv-center inv-muted-cell">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}
+                                </td>
                                 <td class="inv-muted-cell">{{ $detail->article->code ?? '—' }}</td>
                                 <td class="inv-designation">{{ $detail->article->designation ?? '—' }}</td>
                                 <td class="inv-center">{{ number_format($detail->quantite, 0, ',', ' ') }}</td>
@@ -135,6 +138,7 @@
         <div class="inv-signatures">
             <div class="inv-signature">
                 <div class="cap">Le vendeur</div>
+                <div class="who">{{ $vente->nomAuteur() }}</div>
                 <div class="line"></div>
             </div>
             <div class="inv-signature">
@@ -143,7 +147,9 @@
             </div>
         </div>
 
-        @include('partials.invoice-footer', ['footerMessage' => 'Merci pour votre confiance. Cette facture tient lieu de justificatif.'])
+        @include('partials.invoice-footer', [
+            'footerMessage' => 'Merci pour votre confiance. Cette facture tient lieu de justificatif.',
+        ])
     </div>
 
     <script>

@@ -24,6 +24,7 @@
             'docLabel' => 'Bon de Sortie',
             'docNumber' => '#' . str_pad($sortie->id, 6, '0', STR_PAD_LEFT),
             'docDate' => \Carbon\Carbon::parse($sortie->created_at)->format('d/m/Y à H:i'),
+            'auteur' => $sortie->nomAuteur(),
         ])
 
         <!-- Client -->

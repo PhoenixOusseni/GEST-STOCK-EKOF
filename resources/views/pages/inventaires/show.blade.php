@@ -12,10 +12,23 @@
                         <li class="breadcrumb-item active">Détails</li>
                     </ol>
                 </nav>
+                @include('partials.doc-auteur', ['nom' => $inventaire->nomAuteur()])
             </div>
-            <a href="{{ route('gestions_inventaires.index') }}" class="btn btn-primary btn-sm">
-                <i class="bi bi-arrow-left"></i> Retour
-            </a>
+            <div class="d-flex gap-2">
+                <a href="{{ route('gestions_inventaires.index') }}" class="btn btn-primary btn-sm">
+                    <i class="bi bi-arrow-left"></i> Retour
+                </a>
+                @if (\App\Support\Acces::estAdmin())
+                <form action="{{ route('gestions_inventaires.destroy', $inventaire->id) }}" method="POST"
+                    onsubmit="return confirm('Supprimer cet inventaire ?');">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i> Supprimer
+                    </button>
+                </form>
+                @endif
+            </div>
         </div>
     </div>
 

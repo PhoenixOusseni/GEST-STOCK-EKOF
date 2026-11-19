@@ -24,7 +24,6 @@
         @include('partials.invoice-header', [
             'docLabel' => 'Bon de commande',
             'docNumber' => $bon->numero_bon,
-            'docDate' => 'Du ' . $bon->date_commande->format('d/m/Y'),
             'statusLabel' => $bon->statut === 'valide' ? 'Validé' : 'En cours',
             'statusClass' => $bon->statut === 'valide' ? 'inv-status-paid' : 'inv-status-partial',
         ])
@@ -82,7 +81,8 @@
 
         <div class="inv-signatures">
             <div class="inv-signature">
-                <div class="cap">Le magazin</div>
+                <div class="cap">Le vendeur</div>
+                <div class="who">{{ $bon->nomAuteur() }}</div>
                 <div class="line"></div>
             </div>
             <div class="inv-signature">
@@ -91,7 +91,7 @@
             </div>
         </div>
 
-        @include('partials.invoice-footer', ['footerMessage' => 'Ce bon de commande ne sort pas le stock. Le stock est diminué à la transformation en facture.'])
+        @include('partials.invoice-footer', ['footerMessage' => 'Ce bon de commande ne modifie pas le stock du magazin.'])
     </div>
 </body>
 </html>

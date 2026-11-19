@@ -32,6 +32,7 @@
             'docLabel' => 'Reçu de paiement',
             'docNumber' => $achat->numero_achat,
             'docDate' => 'Du ' . $paiement->date_paiement->format('d/m/Y'),
+            'auteur' => $achat->nomAuteur(),
             'statusLabel' => $resteApres <= 0 ? 'Soldé' : 'Non soldé',
             'statusClass' => $resteApres <= 0 ? 'inv-status-paid' : 'inv-status-partial',
         ])

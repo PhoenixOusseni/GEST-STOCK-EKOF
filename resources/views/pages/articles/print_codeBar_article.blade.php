@@ -190,7 +190,7 @@
                         <div class="article-name">{{ Str::limit($article->designation, 50) }}</div>
 
                         <div class="mb-0 text-center">
-                            <img src="{{ asset('images/images.jpg') }}" alt="logo safreco" style="width: 125px;">
+                            <img src="{{ asset('images/logo.png') }}" alt="EKDF eau Bisimilah" style="width: 120px; height: 36px; object-fit: contain;">
                         </div>
 
                         <svg class="barcode" data-code="{{ $article->code_barre }}">

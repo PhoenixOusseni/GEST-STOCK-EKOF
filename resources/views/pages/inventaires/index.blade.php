@@ -69,6 +69,14 @@
                                 </td>
                                 <td class="text-center">
                                     <a href="{{ route('gestions_inventaires.show', $inventaire->id) }}" class="btn btn-sm btn-success" title="Voir"><i class="bi bi-eye"></i></a>
+                                    @if (\App\Support\Acces::estAdmin())
+                                    <form action="{{ route('gestions_inventaires.destroy', $inventaire->id) }}" method="POST" class="d-inline"
+                                        onsubmit="return confirm('Supprimer cet inventaire ?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm btn-danger" title="Supprimer"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                    @endif
                                     @if($inventaire->statut != 'valide' && \App\Support\Acces::peutModifier('inventaire'))
                                         <a href="{{ route('gestions_inventaires.edit', $inventaire->id) }}" class="btn btn-sm btn-warning" title="Modifier"><i class="bi bi-pencil"></i></a>
                                     @endif

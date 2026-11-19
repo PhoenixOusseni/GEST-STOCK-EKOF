@@ -104,6 +104,7 @@
                                         <th>Catégorie</th>
                                         <th class="text-end">Montant</th>
                                         <th>Mode de Paiement</th>
+                                        <th>Saisi par</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -118,6 +119,7 @@
                                                 {{ number_format($depense->montant, 0, ',', ' ') }} FCFA
                                             </td>
                                             <td>{{ $depense->mode_paiement ?? '-' }}</td>
+                                            <td>{{ $depense->nomAuteur() }}</td>
                                             <td>
                                                 @if (\App\Support\Acces::peutModifier('depense'))
                                                 <a href="{{ route('gestions_depenses.edit', $depense->id) }}"
@@ -138,7 +140,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="7" class="text-center text-muted py-4">
+                                            <td colspan="8" class="text-center text-muted py-4">
                                                 Aucune dépense enregistrée
                                             </td>
                                         </tr>

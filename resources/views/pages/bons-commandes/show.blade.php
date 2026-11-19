@@ -12,6 +12,7 @@
                         <li class="breadcrumb-item active">{{ $bon->numero_bon }}</li>
                     </ol>
                 </nav>
+                @include('partials.doc-auteur', ['nom' => $bon->nomAuteur()])
             </div>
             <div class="d-flex gap-2">
                 <a href="{{ route('gestions_bons_commandes.index') }}" class="btn btn-primary btn-sm">
@@ -170,7 +171,7 @@
                     <form action="{{ route('bons_commandes.transformer', $bon->id) }}" method="POST">
                         @csrf
                         <div class="modal-body">
-                            <p class="small text-muted">Le stock du magazin sera diminué et le bon passera à validé. Le versement est enregistré sur la facture.</p>
+                            <p class="small text-muted">Le bon passe à validé et une facture est créée. Le stock du magazin reste intact. Le versement est enregistré sur la facture.</p>
                             <div class="mb-3">
                                 <label class="form-label">Montant du bon</label>
                                 <input type="text" class="form-control" value="{{ number_format($bon->montant_total, 0, ',', ' ') }} FCFA" readonly>

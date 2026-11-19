@@ -12,6 +12,95 @@ use Illuminate\Support\Facades\DB;
 class StockController extends Controller
 {
     /**
+     * Articles du magazin sélectionné, avec le stock réel.
+     */
+    public function articles(Request $request)
+    {
+        [$articles, $depot, $recherche] = $this->articlesDuMagazin($request);
+
+        return view('pages.stocks.articles', compact('articles', 'depot', 'recherche'));
+    }
+
+    public function printArticles(Request $request)
+    {
+        [$articles, $depot, $recherche] = $this->articlesDuMagazin($request);
+
+        $fmtQte = function ($quantite) {
+            $quantite = (float) $quantite;
+
+            return number_format($quantite, $quantite == floor($quantite) ? 0 : 2, ',', ' ');
+        };
+
+        $rows = $articles->values()->map(function ($article, $index) use ($fmtQte) {
+            return [
+                $index + 1,
+                $article->code,
+                $article->designation,
+                $fmtQte($article->stock_reel),
+                number_format($article->prix_vente, 0, ',', ' '),
+            ];
+        });
+
+        $meta = [
+            ['Magazin', $depot->designation],
+            ['Articles', $articles->count()],
+            ['Sans stock', $articles->where('stock_reel', '<=', 0)->count()],
+        ];
+        if ($recherche !== '') {
+            $meta[] = ['Recherche', $recherche];
+        }
+
+        return view('pages.print.etat', [
+            'docLabel' => 'Stock des articles',
+            'docNumber' => $depot->designation,
+            'docDate' => 'Du ' . now()->format('d/m/Y'),
+            'backUrl' => route('stocks.articles', $recherche !== '' ? ['q' => $recherche] : []),
+            'meta' => $meta,
+            'columns' => [
+                ['label' => '#', 'class' => 'inv-center', 'width' => '6%'],
+                ['label' => 'Code', 'width' => '14%'],
+                ['label' => 'Article', 'width' => '46%'],
+                ['label' => 'Stock réel', 'class' => 'inv-num', 'width' => '16%'],
+                ['label' => 'Prix de vente', 'class' => 'inv-num', 'width' => '18%'],
+            ],
+            'rows' => $rows,
+            'totals' => [
+                ['Articles sans stock', (string) $articles->where('stock_reel', '<=', 0)->count()],
+                ['Stock total', $fmtQte($articles->sum('stock_reel'))],
+            ],
+            'footerMessage' => 'Stock réel des articles — ' . $depot->designation . '.',
+        ]);
+    }
+
+    private function articlesDuMagazin(Request $request): array
+    {
+        $depot = DepotActif::current();
+        $recherche = trim((string) $request->get('q', ''));
+
+        $articles = Article::query()
+            ->leftJoin('stocks', function ($join) use ($depot) {
+                $join->on('stocks.article_id', '=', 'articles.id')
+                    ->where('stocks.depot_id', '=', $depot->id);
+            })
+            ->when($recherche !== '', function ($query) use ($recherche) {
+                $query->where(function ($inner) use ($recherche) {
+                    $inner->where('articles.designation', 'like', '%' . $recherche . '%')
+                        ->orWhere('articles.code', 'like', '%' . $recherche . '%');
+                });
+            })
+            ->orderBy('articles.designation')
+            ->get([
+                'articles.id',
+                'articles.code',
+                'articles.designation',
+                'articles.prix_vente',
+                DB::raw('COALESCE(stocks.quantite_disponible, 0) as stock_reel'),
+            ]);
+
+        return [$articles, $depot, $recherche];
+    }
+
+    /**
      * Display a listing of the resource (tous les stocks)
      */
     public function index(Request $request)

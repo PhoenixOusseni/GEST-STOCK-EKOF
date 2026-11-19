@@ -12,6 +12,7 @@
                         <li class="breadcrumb-item active">{{ $sortie->numero_sortie }}</li>
                     </ol>
                 </nav>
+                @include('partials.doc-auteur', ['nom' => $sortie->nomAuteur()])
             </div>
             <div class="d-flex gap-2">
                 <a href="{{ route('gestions_sorties.index') }}" class="btn btn-primary btn-sm">
@@ -25,7 +26,7 @@
                 <a href="{{ route('sorties.print', $sortie->id) }}" class="btn btn-success btn-sm" target="_blank">
                     <i class="bi bi-printer"></i>
                 </a>
-                @if (\App\Support\Acces::peutModifier('sortie'))
+                @if (\App\Support\Acces::estAdmin())
                 <form action="{{ route('gestions_sorties.destroy', $sortie->id) }}" method="POST"
                     onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette sortie ?');">
                     @csrf

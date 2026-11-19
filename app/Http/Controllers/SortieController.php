@@ -10,6 +10,7 @@ use App\Models\Depot;
 use App\Models\Stock;
 use App\Models\MouvementStock;
 use Illuminate\Http\Request;
+use App\Support\Acces;
 use App\Support\DepotActif;
 use Illuminate\Support\Facades\DB;
 
@@ -242,7 +243,11 @@ class SortieController extends Controller
      */
     public function destroy($id)
     {
-        $sortie = Sortie::findOrFail($id);
+        if (! Acces::estAdmin()) {
+            abort(403);
+        }
+
+        $sortie = DepotActif::sorties()->findOrFail($id);
 
         DB::beginTransaction();
         try {

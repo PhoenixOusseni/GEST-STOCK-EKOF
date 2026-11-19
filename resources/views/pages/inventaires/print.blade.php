@@ -3,7 +3,7 @@
 
 <head>
     @include('pages.encaissements.style')
-    <title>SAFRECO | Inventaire {{ $inventaire->numero_inventaire }}</title>
+    <title>Inventaire {{ $inventaire->numero_inventaire }}</title>
     <style>
         .ecart-negatif { color: #dc3545; font-weight: 700; }
         .ecart-positif { color: #198754; font-weight: 700; }
@@ -60,11 +60,10 @@
 
         <!-- En-tête -->
         <div class="header">
-            @if ($entete && $entete->logo)
-                <div class="header-logo">
-                    <img src="{{ asset('storage/' . $entete->logo) }}" alt="Logo">
-                </div>
-            @endif
+            @include('partials.print-watermark')
+            <div class="header-logo">
+                <img src="{{ asset('images/logo.png') }}" alt="EKDF eau Bisimilah">
+            </div>
 
             <div class="header-info">
                 <div class="header-title">{{ $entete->titre ?? 'SAFRECO-GSM' }}</div>
@@ -88,6 +87,7 @@
                 <div class="header-receipt-no">FICHE D'INVENTAIRE</div>
                 <div class="header-receipt-id">{{ $inventaire->numero_inventaire }}</div>
                 <div class="receipt-date">{{ $inventaire->date_inventaire->format('d/m/Y') }}</div>
+                <div class="receipt-author">Par {{ $inventaire->nomAuteur() }}</div>
             </div>
         </div>
 
@@ -250,7 +250,7 @@
         <!-- Pied de page -->
         <div class="footer">
             <p>
-                Cette fiche d'inventaire a été générée le {{ now()->format('d/m/Y à H:i:s') }} par le système de gestion SAFRECO-GSM.
+                Cette fiche d'inventaire a été générée le {{ now()->format('d/m/Y à H:i:s') }} — {{ $entete->titre ?? 'EKDF' }}.
             </p>
             <p style="margin-top: 10px;">
                 <strong>Document officiel — à conserver.</strong>

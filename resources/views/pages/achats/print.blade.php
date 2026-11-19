@@ -33,6 +33,7 @@
             'docLabel' => "Facture d'achat",
             'docNumber' => $achat->numero_achat,
             'docDate' => 'Du ' . $achat->date_achat->format('d/m/Y'),
+            'auteur' => $achat->nomAuteur(),
             'statusLabel' => $estSolde ? 'Soldée' : 'Non soldée',
             'statusClass' => $estSolde ? 'inv-status-paid' : 'inv-status-partial',
         ])

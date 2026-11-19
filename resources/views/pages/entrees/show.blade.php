@@ -12,6 +12,7 @@
                         <li class="breadcrumb-item active">{{ $entree->numero_entree }}</li>
                     </ol>
                 </nav>
+                @include('partials.doc-auteur', ['nom' => $entree->nomAuteur()])
             </div>
             <div class="d-flex gap-2">
                 <a href="{{ route('gestions_entrees.index') }}" class="btn btn-primary btn-sm">
@@ -25,7 +26,7 @@
                 <a href="{{ route('entrees.print', $entree->id) }}" class="btn btn-success btn-sm" target="_blank">
                     <i class="bi bi-printer"></i>
                 </a>
-                @if (\App\Support\Acces::peutModifier('entree'))
+                @if (\App\Support\Acces::estAdmin())
                 <form action="{{ route('gestions_entrees.destroy', $entree->id) }}" method="POST"
                     onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette entrée ?');">
                     @csrf

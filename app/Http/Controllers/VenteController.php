@@ -10,6 +10,7 @@ use App\Models\Article;
 use App\Models\Depot;
 use App\Models\Stock;
 use Illuminate\Http\Request;
+use App\Support\Acces;
 use App\Support\DepotActif;
 use Illuminate\Support\Facades\DB;
 
@@ -214,15 +215,41 @@ class VenteController extends Controller
 
     public function destroy(String $id)
     {
-        $vente = Vente::findOrFail($id);
-        if ($vente->statut === 'solde') {
-            return redirect()->route('gestions_ventes.index')
-                ->with('error', 'Impossible de supprimer une vente soldée.');
+        if (! Acces::estAdmin()) {
+            abort(403);
         }
+
+        $vente = DepotActif::ventes()->with(['details', 'encaissements.banque', 'encaissements.caisse'])->findOrFail($id);
+
+        DB::beginTransaction();
         try {
+            foreach ($vente->details as $detail) {
+                $stock = Stock::where('article_id', $detail->article_id)
+                    ->where('depot_id', $detail->depot_id)
+                    ->first();
+                if ($stock) {
+                    $stock->increment('quantite_disponible', $detail->quantite);
+                }
+            }
+
+            foreach ($vente->encaissements as $encaissement) {
+                if ($encaissement->banque) {
+                    $encaissement->banque->decrement('solde', $encaissement->montant_encaisse);
+                }
+                if ($encaissement->caisse) {
+                    $encaissement->caisse->decrement('solde', $encaissement->montant_encaisse);
+                }
+                $encaissement->soldes()->delete();
+                $encaissement->delete();
+            }
+
+            $vente->paiements()->delete();
             $vente->delete();
-            return redirect()->route('gestions_ventes.index')->with('success', 'Vente supprimée avec succès.');
+            DB::commit();
+
+            return redirect()->route('gestions_ventes.index')->with('success', 'Vente supprimée avec succès. Les quantités ont été remises en stock.');
         } catch (\Exception $e) {
+            DB::rollBack();
             return redirect()->route('gestions_ventes.index')->with('error', 'Erreur: ' . $e->getMessage());
         }
     }

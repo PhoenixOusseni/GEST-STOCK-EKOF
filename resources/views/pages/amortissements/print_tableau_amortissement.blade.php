@@ -20,23 +20,64 @@
         }
 
         .print-header {
-            text-align: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #1b305e;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-align: left;
+            margin: 0 -15mm 16px;
+            padding: 14px 18px 12px;
+            color: #fff;
+            background:
+                radial-gradient(ellipse at 100% 0%, rgba(255, 255, 255, 0.16), transparent 42%),
+                linear-gradient(118deg, #06182f 0%, #0a3268 46%, #14508f 100%);
+            border-bottom: 4px solid #b42318;
+        }
+
+        .print-header .header-watermark {
+            position: absolute;
+            right: 6%;
+            top: 50%;
+            width: 200px;
+            height: 68px;
+            transform: translateY(-50%);
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .print-header .header-watermark svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .print-header img {
+            position: relative;
+            z-index: 1;
+            width: 140px;
+            height: 46px;
+            object-fit: contain;
+            background: #fff;
+            padding: 3px 8px;
+            margin: 0;
         }
 
         .print-header h1 {
-            font-size: 18px;
-            color: #1b305e;
-            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            font-size: 15px;
+            color: #fff;
+            margin-bottom: 4px;
             font-weight: bold;
         }
 
         .print-header .info {
+            position: relative;
+            z-index: 1;
             font-size: 11px;
-            color: #666;
-            margin: 5px 0;
+            color: rgba(255, 255, 255, 0.84);
+            margin: 2px 0;
         }
 
         /* Style du tableau */
@@ -148,6 +189,15 @@
                 display: none !important;
             }
 
+            .print-header {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .print-header {
+                margin: -10mm -10mm 12px;
+            }
+
             @page {
                 size: A4 landscape;
                 margin: 10mm;
@@ -185,9 +235,13 @@
 
     <!-- En-tête -->
     <div class="print-header">
-        <h1>📊 TABLEAU DES IMMOBILISATIONS ET DES AMORTISSEMENTS</h1>
-        <div class="info">Document généré le {{ date('d/m/Y à H:i') }}</div>
-        <div class="info"><strong>Exercice:</strong> {{ date('Y') }}</div>
+        @include('partials.print-watermark')
+        <img src="{{ asset('images/logo.png') }}" alt="EKDF eau Bisimilah">
+        <div>
+            <h1>TABLEAU DES IMMOBILISATIONS ET DES AMORTISSEMENTS</h1>
+            <div class="info">Document généré le {{ date('d/m/Y à H:i') }}</div>
+            <div class="info"><strong>Exercice :</strong> {{ date('Y') }}</div>
+        </div>
     </div>
 
     <!-- Tableau -->

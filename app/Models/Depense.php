@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\NoteAuteur;
 use Illuminate\Database\Eloquent\Model;
 
 class Depense extends Model
 {
+    use NoteAuteur;
     protected $fillable = [
         'depot_id',
         'date_depense',

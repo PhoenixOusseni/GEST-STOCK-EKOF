@@ -7,10 +7,12 @@
     $route = optional(request()->route())->getName() ?? '';
     $pageTitle = match (true) {
         $route === 'dashboard' => 'Tableau de bord',
+        $route === 'logs.index' => 'Logs',
         $route === 'depots.accueil' => 'Magazins',
         str_starts_with($route, 'gestions_ventes') || str_starts_with($route, 'ventes.') => 'Ventes',
         str_starts_with($route, 'gestions_bons_commandes') || str_starts_with($route, 'bons_commandes.') => 'Bons de commande',
         str_starts_with($route, 'gestions_achats') || str_starts_with($route, 'achats.') => 'Achats',
+        $route === 'stocks.articles' || $route === 'stocks.articles.print' => 'Articles',
         str_starts_with($route, 'gestions_entrees') || str_starts_with($route, 'entrees.') => 'Entrées de stock',
         str_starts_with($route, 'gestions_sorties') || str_starts_with($route, 'sorties.') => 'Sorties de stock',
         str_starts_with($route, 'gestions_transferts') || str_starts_with($route, 'transferts.') => 'Transferts',

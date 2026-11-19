@@ -210,6 +210,12 @@
                             margin: 0;
                             font-family: Arial, sans-serif;
                         }
+                        .print-logo {
+                            width: 140px;
+                            height: 42px;
+                            object-fit: contain;
+                            margin-bottom: 12px;
+                        }
                         .info {
                             margin-top: 20px;
                             text-align: center;
@@ -222,6 +228,7 @@
                     </style>
                 </head>
                 <body>
+                    <img class="print-logo" src="{{ asset('images/logo.png') }}" alt="EKDF eau Bisimilah">
                     ${barcodeContent}
                     <div class="info">
                         <h3>${currentBarcode}</h3>

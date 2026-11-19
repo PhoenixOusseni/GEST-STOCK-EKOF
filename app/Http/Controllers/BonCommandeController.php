@@ -61,6 +61,8 @@ class BonCommandeController extends Controller
 
         DB::beginTransaction();
         try {
+            $this->verifierStockDepot($data['articles'], $data['depot_id']);
+
             $bon = BonCommande::create([
                 'date_commande' => $data['date_commande'],
                 'client_id' => $data['client_id'],
@@ -120,6 +122,8 @@ class BonCommandeController extends Controller
 
         DB::beginTransaction();
         try {
+            $this->verifierStockDepot($data['articles'], $data['depot_id']);
+
             $bon->update([
                 'date_commande' => $data['date_commande'],
                 'client_id' => $data['client_id'],
@@ -202,10 +206,6 @@ class BonCommandeController extends Controller
                     'prix_vente' => $detail->prix_vente,
                     'prix_total' => $prixTotal,
                 ]);
-                $stock = Stock::where('article_id', $detail->article_id)
-                    ->where('depot_id', $detail->depot_id)
-                    ->first();
-                $stock->decrement('quantite_disponible', $detail->quantite);
             }
 
             $montantPaye = (float) ($request->montant_paye ?? 0);
@@ -237,7 +237,7 @@ class BonCommandeController extends Controller
             DB::commit();
 
             return redirect()->route('gestions_ventes.show', $vente->id)
-                ->with('success', 'Bon ' . $bon->numero_bon . ' validé. La facture ' . $vente->numero_vente . ' a été créée et le stock a été diminué.');
+                ->with('success', 'Bon ' . $bon->numero_bon . ' validé. La facture ' . $vente->numero_vente . ' a été créée. Le stock n\'a pas été modifié.');
         } catch (\Exception $e) {
             DB::rollBack();
 
@@ -309,10 +309,10 @@ class BonCommandeController extends Controller
         foreach ($demandes as $articleId => $quantite) {
             $stock = Stock::where('article_id', $articleId)->where('depot_id', $depotId)->first();
             $disponible = $stock ? (float) $stock->quantite_disponible : 0;
-            if ($disponible < $quantite) {
+            if ($disponible <= 0) {
                 $nom = Article::find($articleId)->designation ?? 'article';
                 $lieu = $depot->designation ?? 'magazin';
-                throw new \Exception("Stock insuffisant pour {$nom} dans {$lieu}. Disponible : {$disponible}, demandé : {$quantite}. Le bon reste en cours.");
+                throw new \Exception("L'article {$nom} n'a pas de stock dans {$lieu}. Le bon de commande ne peut pas passer.");
             }
         }
     }

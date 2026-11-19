@@ -1,6 +1,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SAFRECO | Impression</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap" rel="stylesheet">
 <style>
     * {
         margin: 0;
@@ -9,10 +9,10 @@
     }
 
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        color: #333;
-        background: #f5f5f5;
-        line-height: 1.6;
+        font-family: "Source Sans 3", "Segoe UI", sans-serif;
+        color: #172033;
+        background: #dfe6f0;
+        line-height: 1.5;
     }
 
     @media print {
@@ -28,91 +28,155 @@
 
         .print-container {
             margin: 0;
-            padding: 20px;
+            padding: 0 12px 8px;
             box-shadow: none;
             border: none;
         }
 
+        .print-container::before {
+            display: none;
+        }
+
+        .header,
+        .header::before,
+        .header::after,
+        .header-receipt,
+        .header-logo,
+        .table thead {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
         .header {
-            border-radius: 5px;
+            margin: 0 -12px 16px;
             box-shadow: none;
         }
     }
 
     .print-container {
-        max-width: 850px;
-        margin: 20px auto;
-        padding: 30px;
-        background: white;
-        border: 1px solid #ddd;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        max-width: 900px;
+        margin: 16px auto 40px;
+        padding: 28px 32px 24px;
+        background: #fff;
+        border: none;
+        box-shadow: 0 16px 40px rgba(12, 32, 64, 0.12);
     }
 
-    /* En-tête personnalisé avec infos entete */
+    .print-container::before {
+        display: none;
+    }
+
     .header {
-        background: linear-gradient(135deg, #0a0a0a 0%, #0d47a1 50%, #1565c0 100%);
-        color: white;
-        padding: 25px 30px;
-        border-radius: 5px;
-        margin-bottom: 30px;
+        position: relative;
+        overflow: hidden;
+        color: #fff;
+        padding: 16px 24px 14px;
+        border-radius: 0;
+        margin: 12px -32px 22px;
         display: flex;
         align-items: center;
-        gap: 30px;
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        gap: 16px;
+        background:
+            radial-gradient(ellipse at 100% 0%, rgba(255, 255, 255, 0.16), transparent 42%),
+            linear-gradient(118deg, #06182f 0%, #0a3268 46%, #14508f 100%);
+        border-bottom: 4px solid #b42318;
+        box-shadow: none;
+    }
+
+    .header::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(-28deg, transparent, transparent 13px, rgba(255, 255, 255, 0.045) 13px, rgba(255, 255, 255, 0.045) 14px);
+        pointer-events: none;
+    }
+
+    .header-watermark {
+        position: absolute;
+        right: 176px;
+        top: 50%;
+        width: 190px;
+        height: 70px;
+        transform: translateY(-50%);
+        overflow: hidden;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .header-watermark svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+
+    .header-logo,
+    .header-info,
+    .header-receipt {
+        position: relative;
+        z-index: 1;
     }
 
     .header-logo {
         flex-shrink: 0;
-        width: 90px;
-        height: 90px;
+        width: 148px;
+        height: 50px;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: rgba(255, 255, 255, 0.15);
-        border-radius: 5px;
+        background: #fff;
+        border: none;
+        border-radius: 0;
         overflow: hidden;
+        padding: 3px 8px;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
     }
 
     .header-logo img {
         width: 100%;
         height: 100%;
-        object-fit: cover;
+        object-fit: contain;
     }
 
     .header-info {
         flex-grow: 1;
-        border-right: 2px solid rgba(255, 255, 255, 0.2);
-        padding-right: 30px;
+        border-right: none;
+        padding-right: 0;
+        min-width: 0;
     }
 
     .header-title {
-        font-size: 28px;
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 22px;
         font-weight: 700;
-        margin-bottom: 5px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+        margin-bottom: 4px;
+        text-transform: none;
+        letter-spacing: -0.02em;
+        text-shadow: none;
+        color: #fff;
     }
 
     .header-subtitle {
-        font-size: 14px;
-        opacity: 0.95;
-        margin-bottom: 10px;
-        font-weight: 500;
+        font-size: 12px;
+        color: #f0c7c3;
+        opacity: 1;
+        margin-bottom: 6px;
+        font-weight: 600;
     }
 
     .header-description {
         font-size: 12px;
-        opacity: 0.9;
-        margin-bottom: 12px;
-        line-height: 1.5;
+        color: rgba(255, 255, 255, 0.78);
+        opacity: 1;
+        margin-bottom: 6px;
+        line-height: 1.45;
     }
 
     .header-contact {
         font-size: 11px;
-        opacity: 0.85;
+        color: rgba(255, 255, 255, 0.84);
+        opacity: 1;
         display: flex;
-        gap: 15px;
+        gap: 10px;
         flex-wrap: wrap;
     }
 
@@ -128,43 +192,65 @@
     }
 
     .header-receipt {
-        flex-shrink: 0;
-        text-align: right;
+        flex: 0 0 auto;
+        text-align: left;
+        background: #fff;
+        color: #08284f;
+        padding: 7px 10px 8px;
+        width: max-content;
+        max-width: 156px;
+        border-left: 3px solid #b42318;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
     }
 
     .header-receipt-no {
-        font-size: 14px;
-        opacity: 0.95;
-        margin-bottom: 5px;
+        font-size: 9px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: #b42318;
+        opacity: 1;
+        margin-bottom: 2px;
     }
 
     .header-receipt-id {
-        font-size: 24px;
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 14px;
         font-weight: 700;
-        background: rgba(255, 255, 255, 0.2);
-        padding: 8px 12px;
-        border-radius: 5px;
-        font-family: 'Courier New', monospace;
+        line-height: 1.2;
+        background: transparent;
+        color: #08284f;
+        padding: 0;
+        border-radius: 0;
+        overflow-wrap: anywhere;
     }
 
     .receipt-date {
         font-size: 11px;
-        opacity: 0.85;
-        margin-top: 8px;
+        color: #5d6b80;
+        opacity: 1;
+        margin-top: 2px;
+    }
+
+    .receipt-author {
+        margin-top: 4px;
+        font-size: 10px;
+        line-height: 1.25;
+        color: #5d6b80;
     }
 
     .document-title {
         text-align: center;
-        font-size: 22px;
+        font-family: "Source Serif 4", Georgia, serif;
+        font-size: 18px;
         font-weight: 700;
-        margin: 30px 0;
-        color: #0d47a1;
-        border-bottom: 4px solid #1565c0;
-        border-top: 4px solid #1565c0;
-        padding: 12px 0;
-        background-color: #f8f9fa;
+        margin: 18px 0 22px;
+        color: #08284f;
+        border-bottom: 1px solid #b42318;
+        border-top: none;
+        padding: 0 0 8px;
+        background: transparent;
         text-transform: uppercase;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.08em;
     }
 
     .info-section {
@@ -172,14 +258,15 @@
     }
 
     .info-section-title {
-        background-color: #f8f9fa;
-        border-left: 5px solid #1565c0;
-        padding: 10px 15px;
+        background: #f4f7fb;
+        border-left: 3px solid #0c3d78;
+        padding: 8px 12px;
         font-weight: 700;
-        font-size: 13px;
-        margin-bottom: 15px;
+        font-size: 11px;
+        letter-spacing: 0.08em;
+        margin-bottom: 12px;
         text-transform: uppercase;
-        color: #0d47a1;
+        color: #08284f;
     }
 
     .info-row {
@@ -221,16 +308,19 @@
     }
 
     .table thead {
-        background-color: #f8f9fa;
-        border-top: 2px solid #333;
-        border-bottom: 2px solid #333;
+        background: #0c3d78;
+        border-top: none;
+        border-bottom: none;
     }
 
     .table th {
-        padding: 12px;
+        padding: 10px 12px;
         text-align: left;
         font-weight: 700;
-        color: #0d47a1;
+        font-size: 11px;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: #fff;
     }
 
     .table td {
@@ -244,10 +334,11 @@
 
     .amount-section {
         margin-top: 25px;
-        padding: 20px;
-        background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
-        border: 2px solid #1565c0;
-        border-radius: 5px;
+        padding: 16px 18px;
+        background: #f7f9fc;
+        border: 1px solid #d5deea;
+        border-top: 3px solid #0c3d78;
+        border-radius: 0;
     }
 
     .amount-row {
@@ -262,11 +353,12 @@
     .amount-row.total {
         font-weight: 700;
         font-size: 16px;
-        background-color: rgba(21, 101, 192, 0.1);
-        border-bottom: 2px solid #1565c0;
-        padding: 12px 0;
+        background-color: #08284f;
+        color: #fff;
+        border-bottom: none;
+        padding: 12px 10px;
         margin-bottom: 0;
-        border-radius: 5px;
+        border-radius: 0;
     }
 
     .amount-label {
@@ -276,8 +368,13 @@
 
     .amount-value {
         font-weight: 700;
-        color: #0d47a1;
+        color: #08284f;
         text-align: right;
+    }
+
+    .amount-row.total .amount-label,
+    .amount-row.total .amount-value {
+        color: #fff;
     }
 
     .badge {

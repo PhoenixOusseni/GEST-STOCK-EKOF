@@ -10,6 +10,7 @@ use App\Models\Depot;
 use App\Models\Stock;
 use App\Models\MouvementStock;
 use Illuminate\Http\Request;
+use App\Support\Acces;
 use App\Support\DepotActif;
 use Illuminate\Support\Facades\DB;
 
@@ -223,9 +224,13 @@ class EntreeController extends Controller
      */
     public function destroy(string $id)
     {
+        if (! Acces::estAdmin()) {
+            abort(403);
+        }
+
         DB::beginTransaction();
         try {
-            $entree = Entree::findOrFail($id);
+            $entree = DepotActif::entrees()->findOrFail($id);
 
             // Annuler l'impact sur le stock si l'entrée était validée
             if ($entree->statut === 'recu') {

@@ -21,6 +21,7 @@ class RestreindreRole
         'parametres.update',
         'cache.clear',
         'logs.clear',
+        'logs.index',
         'migrate',
         'stocks.reset',
         'gestions_depots.create',

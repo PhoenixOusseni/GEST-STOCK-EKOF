@@ -3,7 +3,7 @@
 
 <head>
     @include('pages.encaissements.style')
-    <title>SAFRECO | État Banque {{ $banque->code }}</title>
+    <title>État Banque {{ $banque->code }}</title>
     <style>
         .summary-grid {
             display: grid;
@@ -116,11 +116,10 @@
 
         <!-- En-tête -->
         <div class="header">
-            @if ($entete && $entete->logo)
-                <div class="header-logo">
-                    <img src="{{ asset('storage/' . $entete->logo) }}" alt="Logo">
-                </div>
-            @endif
+            @include('partials.print-watermark')
+            <div class="header-logo">
+                <img src="{{ asset('images/logo.png') }}" alt="EKDF eau Bisimilah">
+            </div>
 
             <div class="header-info">
                 <div class="header-title">{{ $entete->titre ?? 'SAFRECO-GSM' }}</div>
@@ -427,7 +426,7 @@
         <div class="footer">
             <p>
                 État de banque <strong>{{ $banque->designation }}</strong> ({{ $banque->code }}) —
-                Généré le {{ now()->format('d/m/Y à H:i:s') }} par le système de gestion SAFRECO-GSM.
+                Généré le {{ now()->format('d/m/Y à H:i:s') }} — {{ $entete->titre ?? 'EKDF' }}.
             </p>
             <p style="margin-top: 6px;"><strong>Document officiel — à conserver.</strong></p>
         </div>

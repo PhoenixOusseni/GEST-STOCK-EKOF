@@ -56,15 +56,18 @@
 
         .auth-brand {
             display: flex;
-            align-items: center;
-            gap: 12px;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 10px;
         }
 
         .auth-brand img {
-            width: 46px;
-            height: 46px;
-            object-fit: cover;
-            border: 1px solid rgba(255, 255, 255, 0.25);
+            width: 196px;
+            height: 58px;
+            object-fit: contain;
+            background: #fff;
+            border-radius: 6px;
+            padding: 4px 8px;
         }
 
         .auth-brand strong {
@@ -315,7 +318,7 @@
         <section class="auth-aside">
             <div>
                 <div class="auth-brand">
-                    <img src="{{ asset('images/logo_laafi_tiim.jpeg') }}" alt="">
+                    <img src="{{ asset('images/logo.png') }}" alt="EKDF eau Bisimilah">
                     <div>
                         <strong>Market Place</strong>
                         <span>Stocks & trésorerie</span>

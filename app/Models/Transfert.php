@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\NoteAuteur;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Transfert extends Model
 {
-    use HasFactory;
+    use HasFactory, NoteAuteur;
 
     protected $fillable = [
         'code',

@@ -22,7 +22,7 @@
 
     <section class="section">
         <div class="row">
-            <div class="col-lg-10">
+            <div class="col-lg-12">
                 <div class="card mb-3">
                     <div class="card-body">
                         <h5 class="card-title mb-3">Filtres</h5>
@@ -134,32 +134,6 @@
                             </div>
                             <div class="mt-3">{{ $bons->links() }}</div>
                         @endif
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-2">
-                <div class="card mb-3">
-                    <div class="card-body text-center">
-                        <h6 class="text-muted small">Bons</h6>
-                        <h4 class="fw-bold mb-0">{{ $stats['total'] }}</h4>
-                    </div>
-                </div>
-                <div class="card mb-3">
-                    <div class="card-body text-center">
-                        <h6 class="text-muted small">En cours</h6>
-                        <h4 class="fw-bold mb-0">{{ $stats['en_cours'] }}</h4>
-                    </div>
-                </div>
-                <div class="card mb-3">
-                    <div class="card-body text-center">
-                        <h6 class="text-muted small">Validés</h6>
-                        <h4 class="fw-bold mb-0">{{ $stats['valides'] }}</h4>
-                    </div>
-                </div>
-                <div class="card mb-3">
-                    <div class="card-body text-center">
-                        <h6 class="text-muted small">Montant en cours</h6>
-                        <h6 class="fw-bold mb-0">{{ number_format($stats['montant_en_cours'], 0, ',', ' ') }}</h6>
                     </div>
                 </div>
             </div>
